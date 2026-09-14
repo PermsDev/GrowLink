@@ -1,0 +1,21 @@
+# Environment
+.env
+
+# Python
+__pycache__/
+
+# Database
+*.sql
+*.db
+
+# catatan
+*.txt
+
+# Archives
+*.zip
+
+# Backup folders
+backup/
+
+# Migration folders
+migrasi database ke sqlite/
