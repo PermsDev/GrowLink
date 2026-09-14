@@ -19,9 +19,9 @@ async def ensure_member(
                     user_id,
                     nickname
                 )
-                VALUES (%s, %s) AS new
+                VALUES (%s, %s)
                 ON DUPLICATE KEY UPDATE
-                    nickname = new.nickname
+                    nickname = VALUES(nickname)
             """, (
                 user_id,
                 nickname

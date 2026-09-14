@@ -83,10 +83,10 @@ async def set_display_source(
                     user_id,
                     display_source
                 )
-                VALUES (%s, %s, %s) AS new
+                VALUES (%s, %s, %s)
 
                 ON DUPLICATE KEY UPDATE
-                    display_source = new.display_source
+                    display_source = VALUES(display_source)
                 """,
                 (
                     guild_id,
@@ -131,10 +131,10 @@ async def set_display_source_bulk(
                     user_id,
                     display_source
                 )
-                VALUES (%s, %s, %s) AS new
+                VALUES (%s, %s, %s)
 
                 ON DUPLICATE KEY UPDATE
-                    display_source = new.display_source
+                    display_source = VALUES(display_source)
                 """,
                 values
             )

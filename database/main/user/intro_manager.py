@@ -59,9 +59,9 @@ async def save_introduction(
                         user_id,
                         nickname
                     )
-                    VALUES (%s, %s) AS new
+                    VALUES (%s, %s)
                     ON DUPLICATE KEY UPDATE
-                        nickname = new.nickname
+                        nickname = VALUES(nickname)
                 """, (
                     user_id,
                     nickname
@@ -77,9 +77,9 @@ async def save_introduction(
                         game_key,
                         value
                     )
-                    VALUES (%s, 'growtopia', %s) AS new
+                    VALUES (%s, 'growtopia', %s)
                     ON DUPLICATE KEY UPDATE
-                        value = new.value
+                        value = VALUES(value)
                 """, (
                     user_id,
                     growid

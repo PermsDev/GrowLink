@@ -147,11 +147,11 @@ async def upsert_setup(
                     channel_id,
                     panel_message
                 )
-                VALUES (%s, %s, %s, %s) as new
-
+                VALUES (%s, %s, %s, %s)
+                
                 ON DUPLICATE KEY UPDATE
-                    channel_id = new.channel_id,
-                    panel_message = new.panel_message
+                    channel_id = VALUES(channel_id),
+                    panel_message = VALUES(panel_message)
             """, (
                 guild_id,
                 channel_key,

@@ -20,9 +20,9 @@ async def upsert_role(
                     role_key,
                     role_id
                 )
-                VALUES (%s, %s, %s) AS new
+                VALUES (%s, %s, %s)
                 ON DUPLICATE KEY UPDATE
-                    role_id = new.role_id
+                    role_id = VALUES(role_id)
                 """,
                 (
                     guild_id,

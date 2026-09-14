@@ -43,9 +43,9 @@ async def ensure_game(
                     game_key,
                     value
                 )
-                VALUES (%s, %s, %s) AS new
+                VALUES (%s, %s, %s)
                 ON DUPLICATE KEY UPDATE
-                    value = new.value
+                    value = VALUES(value)
             """, (
                 user_id,
                 game_key,

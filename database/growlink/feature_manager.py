@@ -108,9 +108,9 @@ async def set_feature_active(
                     feature_id,
                     active
                 )
-                VALUES (%s, %s, %s) AS new
+                VALUES (%s, %s, %s)
                 ON DUPLICATE KEY UPDATE
-                    active = new.active
+                    active = VALUES(active)
                 """,
                 (
                     guild_id,
