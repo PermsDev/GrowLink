@@ -8,9 +8,6 @@ __pycache__/
 *.sql
 *.db
 
-# catatan
-*.txt
-
 # Archives
 *.zip
 
