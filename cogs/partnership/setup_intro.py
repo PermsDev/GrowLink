@@ -49,41 +49,30 @@ class SetupIntro(commands.Cog):
         role: discord.Role | None = None,
     ):
 
-        # ======================
-        # CHECK PARTNERSHIP
-        # ======================
         if not await require_partnership_access(
             interaction
         ):
             return
 
-        # ======================
-        # CREATE PANEL
-        # ======================
+        await interaction.response.defer(
+            ephemeral=True
+        )
+
         await create_intro_panel(
             guild=interaction.guild,
             channel=channel,
         )
 
-        # ======================
-        # ENABLE INTRO FEATURE
-        # ======================
         await set_feature_active(
             guild_id=interaction.guild.id,
             feature_type=FEATURE_INTRODUCTION,
             active=True,
         )
 
-        # ======================
-        # SYNC DISPLAY NAME
-        # ======================
         await sync_guild_members_to_growid(
             guild=interaction.guild
         )
 
-        # ======================
-        # SAVE ROLE
-        # ======================
         if role is not None:
             await upsert_role(
                 guild_id=interaction.guild.id,
@@ -91,10 +80,7 @@ class SetupIntro(commands.Cog):
                 role_id=role.id,
             )
 
-        # ======================
-        # RESPONSE
-        # ======================
-        await interaction.response.send_message(
+        await interaction.followup.send(
             f"✅ Panel Introduction berhasil dibuat di {channel.mention}.",
             ephemeral=True
         )
