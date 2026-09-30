@@ -54,6 +54,13 @@ class SetupIntro(commands.Cog):
         #     interaction
         # ):
         #     return
+        
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message(
+                "❌ Hanya administrator yang dapat menggunakan command ini.",
+                ephemeral=True
+            )
+            return
 
         await interaction.response.defer(
             ephemeral=True
