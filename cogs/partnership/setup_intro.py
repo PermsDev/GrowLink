@@ -34,6 +34,7 @@ class SetupIntro(commands.Cog):
     ):
         self.bot = bot
 
+    @app_commands.default_permissions(administrator=True)
     @app_commands.command(
         name="setup-intro",
         description="Membuat panel Introduction."
@@ -49,10 +50,10 @@ class SetupIntro(commands.Cog):
         role: discord.Role | None = None,
     ):
 
-        if not await require_partnership_access(
-            interaction
-        ):
-            return
+        # if not await require_partnership_access(
+        #     interaction
+        # ):
+        #     return
 
         await interaction.response.defer(
             ephemeral=True
