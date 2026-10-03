@@ -3,7 +3,7 @@ from discord.ext import commands
 
 
 async def load_cogs(bot: commands.Bot):
-    print("[Loader] Loading Cogs...")
+    # print("[Loader] Loading Cogs...")
 
     for root, _, files in os.walk("cogs"):
         for file in files:
@@ -19,7 +19,7 @@ async def load_cogs(bot: commands.Bot):
 
             try:
                 await bot.load_extension(extension)
-                print(f"[Loader] Loaded: {extension}")
+                # print(f"[Loader] Loaded: {extension}")
 
             except Exception as e:
                 print(f"[Loader] Failed: {extension}")

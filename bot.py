@@ -22,6 +22,10 @@ from views.partnership.introduction.introduction_view import IntroductionView
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 
+import logging
+
+logging.getLogger("asyncmy").setLevel(logging.ERROR)
+
 # ======================
 # INTENTS
 # ======================
