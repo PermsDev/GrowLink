@@ -22,9 +22,9 @@ class IntroductionView(
     def get_embed() -> discord.Embed:
 
         return discord.Embed(
-            title="Introduction Your Growid",
+            title="Introduction Your GrowID",
             description=(
-                "Silakan Mengisi Growid sesuai dengan data game kalian.\n"
-                "-# Display Name akan berubah sesuai dengan Growid yang kalian masukkan."
+                "Please enter your GrowID according to your game information.\n"
+                "-# Your Discord display name will be updated based on the GrowID you enter."
             )
         )

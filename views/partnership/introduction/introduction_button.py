@@ -49,6 +49,6 @@ class IntroductionButton(
 
             if not interaction.response.is_done():
                 await interaction.response.send_message(
-                    "❌ Terjadi kesalahan saat mengambil data Introduction.",
+                    "❌ An error occurred while retrieving your Introduction data.",
                     ephemeral=True
                 )

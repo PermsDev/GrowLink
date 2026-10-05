@@ -15,15 +15,15 @@ class IntroductionModal(
 ):
 
     nickname = discord.ui.TextInput(
-        label="Nama Panggilan",
-        placeholder="Masukkan nama panggilan kamu...",
+        label="Nickname",
+        placeholder="Enter your nickname...",
         required=True,
         max_length=32
     )
 
     growid = discord.ui.TextInput(
         label="GrowID Growtopia",
-        placeholder="Masukkan GrowID Growtopia kamu...",
+        placeholder="Enter your GrowID...",
         required=True,
         max_length=32
     )
@@ -53,75 +53,62 @@ class IntroductionModal(
 
         try:
 
-            # ======================
-            # SAVE INTRODUCTION
-            # ======================
-
             await save_introduction(
                 user_id=user_id,
                 nickname=nickname,
                 growid=growid
             )
 
-            # ======================
-            # UPDATE DISPLAY NAME
-            # ======================
-
             display_status = await update_member_display_name(
                 member=interaction.user
             )
 
-            # ======================
-            # RESPONSE
-            # ======================
-
             if display_status == "updated":
                 display_message = (
-                    "✅ Display name Discord berhasil diperbarui."
+                    "✅ Your Discord display name has been updated."
                 )
 
             elif display_status == "already_same":
                 display_message = (
-                    "✅ Display name Discord sudah sesuai."
+                    "✅ Your Discord display name is already up to date."
                 )
 
             elif display_status == "role_too_low":
                 display_message = (
-                    "⚠️ Introduction berhasil disimpan, "
-                    "tetapi display name Discord tidak dapat diubah "
-                    "karena role bot lebih rendah atau sama dengan "
-                    "role kamu."
+                    "⚠️ Your Introduction was saved, "
+                    "but your Discord display name could not be changed "
+                    "because the bot's role is lower than or equal to "
+                    "your role."
                 )
 
             elif display_status == "no_source":
                 display_message = (
-                    "⚠️ Introduction berhasil disimpan, "
-                    "tetapi display source belum tersedia."
+                    "⚠️ Your Introduction was saved, "
+                    "but the display source is not available."
                 )
 
             elif display_status == "no_data":
                 display_message = (
-                    "⚠️ Introduction berhasil disimpan, "
-                    "tetapi data untuk display name tidak tersedia."
+                    "⚠️ Your Introduction was saved, "
+                    "but the data required for the display name "
+                    "is not available."
                 )
 
             else:
                 display_message = (
-                    "⚠️ Introduction berhasil disimpan, "
-                    "tetapi display name Discord tidak berubah."
+                    "⚠️ Your Introduction was saved, "
+                    "but your Discord display name was not changed."
                 )
-
 
             await interaction.response.send_message(
                 (
-                    "✅ **Introduction berhasil disimpan!**\n\n"
-                    f"**Nama Panggilan:** {nickname}\n"
+                    "✅ **Introduction saved successfully!**\n\n"
+                    f"**Nickname:** {nickname}\n"
                     f"**GrowID:** {growid}\n\n"
                     f"{display_message}"
                 ),
                 ephemeral=True
             )
-
 
         except Exception as e:
 
@@ -132,6 +119,6 @@ class IntroductionModal(
 
             if not interaction.response.is_done():
                 await interaction.response.send_message(
-                    "❌ Terjadi kesalahan saat menyimpan Introduction.",
+                    "❌ An error occurred while saving your Introduction.",
                     ephemeral=True
                 )
