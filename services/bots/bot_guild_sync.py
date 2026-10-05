@@ -26,7 +26,7 @@ async def sync_bot_guilds(bot):
         - guild_db TIDAK PERNAH dihapus.
     """
     
-    print(f"[SYNC BOT GUILDS] {bot.user.name} ({bot.user.id})")
+    # print(f"[SYNC BOT GUILDS] {bot.user.name} ({bot.user.id})")
     bot_id = bot.user.id
 
     # --------------------------------------------------

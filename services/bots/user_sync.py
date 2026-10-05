@@ -55,7 +55,7 @@ async def sync_all_members(
     Hanya user_id yang dimasukkan ke user_db.
     """
     
-    print(f"[SYNC ALL MEMBERS] {bot.user.name} ({bot.user.id})")
+    # print(f"[SYNC ALL MEMBERS] {bot.user.name} ({bot.user.id})")
 
     for guild in bot.guilds:
 

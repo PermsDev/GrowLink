@@ -23,7 +23,7 @@ async def sync_guild_keys(
         - Partnership tidak pernah dihapus oleh sync ini
     """
     
-    print(f"[SYNC GUILD KEYS] {bot.user.name} ({bot.user.id})")
+    # print(f"[SYNC GUILD KEYS] {bot.user.name} ({bot.user.id})")
 
     # ==================================================
     # GET GUILDS YANG DIMILIKI BOT
