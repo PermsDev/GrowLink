@@ -26,5 +26,6 @@ class IntroductionView(
             description=(
                 "Please enter your GrowID according to your game information.\n"
                 "-# Your Discord display name will be updated based on the GrowID you enter."
-            )
+            ),
+            color=discord.Color.from_str("#5865F2")
         )

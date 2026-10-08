@@ -16,7 +16,7 @@ class IntroductionButton(
     def __init__(self):
         super().__init__(
             label="Introduction",
-            style=discord.ButtonStyle.primary,
+            style=discord.ButtonStyle.success,
             custom_id="growlink:introduction"
         )
 
