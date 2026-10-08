@@ -118,6 +118,7 @@ async def analyze_multi_images(
     timeout_success = False
     delete_success = False
     review_ids = []
+    action_id = None
 
     if not images:
 
@@ -251,6 +252,7 @@ async def analyze_multi_images(
         "total_images": total_images,
         "phishing_count": phishing_count,
         "review_ids": review_ids,
+        "action_id": action_id,
         "timeout": timeout_success,
         "delete": delete_success,
     }
