@@ -311,7 +311,7 @@ async def report_message(
             timed_out = await timeout_member(
                 member=message.author,
                 duration=timedelta(
-                    minutes=5
+                    days=7
                 ),
                 reason=(
                     "Phishing message reported "

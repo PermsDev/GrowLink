@@ -768,7 +768,7 @@ class PhishingReviewView(
                 await timeout_member(
                     member=target_member,
                     duration=timedelta(
-                        minutes=5
+                        days=7
                     ),
                     reason=(
                         "Phishing punishment "
@@ -803,7 +803,7 @@ class PhishingReviewView(
                     "Punishment has been issued.\n\n"
                     f"• Message deleted: "
                     f"{'Yes' if message_deleted else 'No'}\n"
-                    f"• User timed out for 5 minutes: "
+                    f"• User timed out for 7 days: "
                     f"{'Yes' if timeout_success else 'No'}\n"
                     f"• Reviewer: "
                     f"`{interaction.user.id}`"

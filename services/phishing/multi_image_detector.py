@@ -198,7 +198,7 @@ async def analyze_multi_images(
                 await timeout_member(
                     member=member,
                     duration=timedelta(
-                        minutes=5
+                        days=7
                     ),
                     reason="Phishing detected",
                 )
