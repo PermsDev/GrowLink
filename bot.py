@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 import discord
@@ -20,6 +21,7 @@ from services.bots.bot_guild_sync import sync_bot_guilds
 from services.bots.guild_key_sync import sync_guild_keys
 from services.bots.user_sync import sync_all_members, sync_guild_members
 from services.phishing.review_restore import restore_phishing_review_views
+from utils.moderation.delete_scheduler import delete_checker
 from views.member.moderation.timeout_view import RemoveTimeoutButton
 from views.partnership.introduction.introduction_view import IntroductionView
 
@@ -39,6 +41,9 @@ intents.message_content = True
 
 
 class GrowLink(commands.Bot):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.delete_task = None
 
     async def setup_hook(self):
         await init_databases()
@@ -82,6 +87,16 @@ async def on_ready():
     await sync_bot_guilds(bot)
     await sync_guild_keys(bot)
     await sync_all_members(bot)
+    # ======================
+    # DELETE CHECKER
+    # ======================
+    if (
+        bot.delete_task is None
+        or bot.delete_task.done()
+    ):
+        bot.delete_task = asyncio.create_task(
+            delete_checker(bot)
+        )
 
 # ======================
 # GUILD EVENTS

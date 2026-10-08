@@ -2,6 +2,10 @@ from datetime import timedelta
 
 import discord
 
+from utils.moderation.delete_scheduler import (
+    register_delete,
+)
+
 from views.member.moderation.timeout_view import (
     TimeoutView,
 )
@@ -62,6 +66,12 @@ async def timeout_member(
         )
 
         embed.add_field(
+            name="Server",
+            value=f"`{member.guild.name}`",
+            inline=False,
+        )
+
+        embed.add_field(
             name="Duration",
             value=f"`{duration_text}`",
             inline=True,
@@ -89,9 +99,19 @@ async def timeout_member(
             member_id=member.id,
         )
 
-        await member.send(
+        dm_message = await member.send(
             embed=embed,
             view=view,
+        )
+
+        delete_after = (
+            duration + timedelta(hours=12)
+        )
+
+        await register_delete(
+            channel_id=dm_message.channel.id,
+            message_id=dm_message.id,
+            delete_after=delete_after,
         )
 
     except (
