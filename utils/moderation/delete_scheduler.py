@@ -23,7 +23,8 @@ async def register_delete(
         )
         
     expire_time = (
-        time.time() + delete_after
+        time.time()
+        + delete_after.total_seconds()
     )
 
     await upsert_delete_queue(
