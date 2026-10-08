@@ -14,9 +14,13 @@ from database.database import (
 from events.guild.guild_join import handle_guild_join
 from events.guild.guild_remove import handle_guild_remove
 from events.member.member_join import handle_member_join
+from events.message.message_create import handle_message_create
+
 from services.bots.bot_guild_sync import sync_bot_guilds
 from services.bots.guild_key_sync import sync_guild_keys
 from services.bots.user_sync import sync_all_members, sync_guild_members
+from services.phishing.review_restore import restore_phishing_review_views
+from views.member.moderation.timeout_view import RemoveTimeoutButton
 from views.partnership.introduction.introduction_view import IntroductionView
 
 load_dotenv()
@@ -40,7 +44,12 @@ class GrowLink(commands.Bot):
         await init_databases()
         await load_cogs(self)
         await sync_commands(self)
-        self.add_view( IntroductionView() )
+        
+        self.add_view(IntroductionView())
+        self.add_dynamic_items(
+            RemoveTimeoutButton
+        )
+        await restore_phishing_review_views(self)
 
     async def close(self):
         await close_databases()
@@ -90,6 +99,11 @@ async def on_guild_remove(guild):
 async def on_member_join(member):
     await handle_member_join(member)
 
+@bot.event
+async def on_message(message):
+
+    await handle_message_create(bot, message)
+    await bot.process_commands(message)
 
 # ======================
 # ERROR HANDLER (!)
