@@ -1,150 +1,115 @@
 import discord
 
-from database.main.user.display_name_manager import (
-    get_display_source,
-    set_display_source,
-    set_display_source_bulk,
-)
 from database.main.user.intro_manager import (
     get_introduction,
 )
 
+from database.growlink.feature_manager import (
+    get_active_feature_guild_ids,
+)
 
-# ==================================================
-# GET MEMBER DISPLAY SOURCE
-# ==================================================
-
-async def get_member_display_source(
-    guild_id: int,
-    user_id: int
-):
-    return await get_display_source(
-        guild_id=guild_id,
-        user_id=user_id
-    )
-
-
-# ==================================================
-# SET GROWID DISPLAY SOURCE
-# ==================================================
-
-async def set_growid_display_source(
-    guild_id: int,
-    user_id: int
-):
-    await set_display_source(
-        guild_id=guild_id,
-        user_id=user_id,
-        display_source="growid"
-    )
-
-
-# ==================================================
-# SYNC GUILD MEMBERS TO GROWID
-# ==================================================
-
-async def sync_guild_members_to_growid(
-    guild: discord.Guild
-):
-    user_ids = [
-        member.id
-        for member in guild.members
-        if not member.bot
-    ]
-
-    if not user_ids:
-        return 0
-
-    return await set_display_source_bulk(
-        guild_id=guild.id,
-        user_ids=user_ids,
-        display_source="growid"
-    )
-
-
-# ==================================================
-# UPDATE DISCORD DISPLAY NAME
-# ==================================================
 
 async def update_member_display_name(
-    member: discord.Member
-):
-    """
-    Mengubah nickname Discord berdasarkan
-    display_source milik user.
-
-    Return:
-        "updated"       -> berhasil mengubah
-        "already_same"  -> nickname sudah sama
-        "no_source"     -> display_source tidak ditemukan
-        "no_data"       -> data display name tidak tersedia
-        "role_too_low"  -> role bot terlalu rendah
-    """
-
-    guild_id = member.guild.id
-    user_id = member.id
-
-    # ======================
-    # GET DISPLAY SOURCE
-    # ======================
-
-    display_source = await get_display_source(
-        guild_id=guild_id,
+    bot: discord.Client,
+    user_id: int,
+) -> dict:
+    introduction = await get_introduction(
         user_id=user_id
     )
 
-    if not display_source:
-        return "no_source"
+    if not introduction:
+        return {
+            "status": "no_data",
+            "guilds": {},
+        }
 
-    # ======================
-    # GET INTRODUCTION
-    # ======================
+    _, growid = introduction
 
-    nickname, growid = await get_introduction(
-        user_id=user_id
+    if not growid:
+        return {
+            "status": "no_data",
+            "guilds": {},
+        }
+
+    guild_ids = await get_active_feature_guild_ids(
+        feature_id=1
     )
 
-    # ======================
-    # RESOLVE DISPLAY NAME
-    # ======================
+    if not guild_ids:
+        return {
+            "status": "no_active_guild",
+            "guilds": {},
+        }
 
-    display_name = None
+    results = {}
 
-    if display_source == "nickname":
-        display_name = nickname
+    for guild_id in guild_ids:
+        guild = bot.get_guild(guild_id)
 
-    elif display_source == "growid":
-        display_name = growid
+        if guild is None:
+            results[guild_id] = "bot_not_in_guild"
+            continue
 
-    if not display_name:
-        return "no_data"
+        member = guild.get_member(user_id)
 
-    # ======================
-    # ALREADY SAME
-    # ======================
+        if member is None:
+            try:
+                member = await guild.fetch_member(
+                    user_id
+                )
+            except discord.NotFound:
+                results[guild_id] = "not_in_guild"
+                continue
+            except discord.Forbidden:
+                results[guild_id] = "member_fetch_forbidden"
+                continue
+            except discord.HTTPException:
+                results[guild_id] = "fetch_failed"
+                continue
 
-    if member.nick == display_name:
-        return "already_same"
+        if member.bot:
+            results[guild_id] = "bot_member"
+            continue
 
-    # ======================
-    # CHECK BOT ROLE
-    # ======================
+        if member.nick == growid:
+            results[guild_id] = "already_same"
+            continue
 
-    bot_member = member.guild.me
+        bot_member = guild.me
 
-    if bot_member is None:
-        return "role_too_low"
+        if bot_member is None:
+            results[guild_id] = "role_too_low"
+            continue
 
-    if member.top_role >= bot_member.top_role:
-        return "role_too_low"
+        if member.top_role >= bot_member.top_role:
+            results[guild_id] = "role_too_low"
+            continue
 
-    # ======================
-    # UPDATE NICKNAME
-    # ======================
+        try:
+            await member.edit(
+                nick=growid,
+                reason="GrowLink Introduction display name",
+            )
+        except discord.Forbidden:
+            results[guild_id] = "update_forbidden"
+        except discord.HTTPException:
+            results[guild_id] = "update_failed"
+        else:
+            results[guild_id] = "updated"
 
-    await member.edit(
-        nick=display_name,
-        reason="GrowLink Introduction display name"
-    )
+    if "updated" in results.values():
+        status = "updated"
+    elif "already_same" in results.values():
+        status = "already_same"
+    elif results and all(
+        value == "not_in_guild"
+        for value in results.values()
+    ):
+        status = "not_in_guild"
+    else:
+        status = "completed"
 
-    return "updated"
+    return {
+        "status": status,
+        "guilds": results,
+    }

@@ -163,3 +163,27 @@ async def is_feature_active(
                 return False
 
             return row[0] == "1"
+        
+        
+# ==================================================
+# GET ACTIVE FEATURE GUILD IDs (Khusus fitur introduction)
+# ==================================================
+
+async def get_active_feature_guild_ids(feature_id: int = 1) -> list[int]:
+    pool = get_pool()
+
+    async with pool.acquire() as conn:
+        async with conn.cursor() as cursor:
+            await cursor.execute(
+                """
+                SELECT guild_id
+                FROM gl_feature_active
+                WHERE feature_id = %s
+                AND active = '1'
+                """,
+                (feature_id,),
+            )
+
+            rows = await cursor.fetchall()
+
+    return [int(row[0]) for row in rows]
