@@ -11,10 +11,6 @@ from services.partnership.setup.intro_panel import (
     create_intro_panel,
 )
 
-from services.partnership.display_name.display_name_service import (
-    sync_guild_members_to_growid,
-)
-
 from database.growlink.role_manager import (
     upsert_role,
     ROLE_KEY,
@@ -49,12 +45,11 @@ class SetupIntro(commands.Cog):
         channel: discord.TextChannel,
         role: discord.Role | None = None,
     ):
-
         # if not await require_partnership_access(
         #     interaction
         # ):
         #     return
-        
+
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message(
                 "❌ Hanya administrator yang dapat menggunakan command ini.",
@@ -75,10 +70,6 @@ class SetupIntro(commands.Cog):
             guild_id=interaction.guild.id,
             feature_type=FEATURE_INTRODUCTION,
             active=True,
-        )
-
-        await sync_guild_members_to_growid(
-            guild=interaction.guild
         )
 
         if role is not None:
