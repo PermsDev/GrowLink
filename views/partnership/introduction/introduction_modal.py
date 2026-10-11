@@ -123,6 +123,11 @@ class IntroductionModal(
         self,
         interaction: discord.Interaction,
     ):
+        await interaction.response.defer(
+            ephemeral=True,
+            thinking=True,
+        )
+
         user_id = interaction.user.id
 
         nickname = self.nickname.value.strip()
@@ -220,7 +225,7 @@ class IntroductionModal(
                     "GrowID card update in PermaCore failed."
                 )
 
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 (
                     "✅ **Introduction saved successfully!**\n\n"
                     f"**Nickname:** {nickname}\n"
@@ -240,13 +245,13 @@ class IntroductionModal(
                 "❌ An error occurred while processing your Introduction."
             )
 
-            if not interaction.response.is_done():
-                await interaction.response.send_message(
-                    error_message,
-                    ephemeral=True,
-                )
-            else:
+            try:
                 await interaction.followup.send(
                     error_message,
                     ephemeral=True,
+                )
+            except discord.HTTPException as response_error:
+                print(
+                    "[Introduction] Failed to send error response "
+                    f"for user {user_id}: {response_error}"
                 )
