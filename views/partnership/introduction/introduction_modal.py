@@ -1,6 +1,3 @@
-import os
-
-import aiohttp
 import discord
 
 from database.main.user.intro_manager import (
@@ -10,6 +7,14 @@ from database.main.user.intro_manager import (
 
 from services.partnership.display_name.display_name_service import (
     update_member_display_name,
+)
+
+from views.partnership.introduction.introduction_role_service import (
+    give_introduction_role,
+)
+
+from services.api.permacore_api import (
+    update_growid_card,
 )
 
 
@@ -45,80 +50,6 @@ class IntroductionModal(
         if growid_value is not None:
             self.growid.default = growid_value
 
-    async def notify_permacore(
-        self,
-        user_id: int,
-    ) -> bool:
-        api_url = os.getenv(
-            "PERMACORE_INTERNAL_API_URL",
-            "http://permacore-api:8765/internal/update-growid-card",
-        )
-
-        api_token = os.getenv(
-            "INTERNAL_API_TOKEN",
-            "",
-        ).strip()
-
-        if not api_token:
-            print(
-                "[Introduction] INTERNAL_API_TOKEN is missing."
-            )
-            return False
-
-        try:
-            timeout = aiohttp.ClientTimeout(total=20)
-
-            async with aiohttp.ClientSession(
-                timeout=timeout,
-            ) as session:
-                async with session.post(
-                    api_url,
-                    json={
-                        "user_id": user_id,
-                    },
-                    headers={
-                        "Authorization": f"Bearer {api_token}",
-                    },
-                ) as response:
-
-                    result = await response.json(
-                        content_type=None,
-                    )
-
-                    if response.status != 200:
-                        print(
-                            "[Introduction] PermaCore API returned "
-                            f"HTTP {response.status}: {result}"
-                        )
-                        return False
-
-                    if not isinstance(result, dict):
-                        print(
-                            "[Introduction] Invalid PermaCore API response."
-                        )
-                        return False
-
-                    if not result.get("success"):
-                        print(
-                            "[Introduction] PermaCore failed to update "
-                            f"GrowID card: {result}"
-                        )
-                        return False
-
-                    print(
-                        "[Introduction] PermaCore GrowID card "
-                        f"updated for user {user_id}."
-                    )
-
-                    return True
-
-        except Exception as error:
-            print(
-                "[Introduction] PermaCore API request failed "
-                f"for user {user_id}: {error}"
-            )
-            return False
-
     async def on_submit(
         self,
         interaction: discord.Interaction,
@@ -151,10 +82,22 @@ class IntroductionModal(
                 growid=growid,
             )
 
+            if isinstance(interaction.user, discord.Member):
+                try:
+                    await give_introduction_role(
+                        member=interaction.user,
+                    )
+                except Exception as error:
+                    print(
+                        "[Introduction] Failed to assign "
+                        f"GT_intro role for user {user_id} "
+                        f"in guild {interaction.guild_id}: {error}"
+                    )
+
             permacore_status = None
 
             if profile_exists and profile_changed:
-                permacore_status = await self.notify_permacore(
+                permacore_status = await update_growid_card(
                     user_id=user_id,
                 )
 
