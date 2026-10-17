@@ -1,9 +1,5 @@
 from database.database import get_grow_pool as get_pool
 
-
-ROLE_KEY = "GT_intro"
-
-
 async def get_role(
     guild_id: int,
     role_key: str,

@@ -1,17 +1,12 @@
 import discord
 
+from config.constants import INTRO_CHANNEL_KEY
 from database.growlink.setup_manager import (
     get_setup,
     upsert_setup,
 )
 
-from views.partnership.introduction.introduction_view import (
-    IntroductionView,
-)
-
-
-CHANNEL_KEY = "gl_intro"
-
+from views.partnership.introduction.introduction_view import IntroductionView
 
 async def create_intro_panel(
     guild: discord.Guild,
@@ -23,7 +18,7 @@ async def create_intro_panel(
     # ==================================================
     previous_setup = await get_setup(
         guild_id=guild.id,
-        channel_key=CHANNEL_KEY,
+        channel_key=INTRO_CHANNEL_KEY,
     )
 
     # ==================================================
@@ -70,7 +65,7 @@ async def create_intro_panel(
     # ==================================================
     await upsert_setup(
         guild_id=guild.id,
-        channel_key=CHANNEL_KEY,
+        channel_key=INTRO_CHANNEL_KEY,
         channel_id=channel.id,
         panel_message=message.id,
     )
