@@ -1,6 +1,7 @@
 
 import discord
 
+from database.growlink.emoji_manager import get_emoji
 from views.promote.promote_buttons import (
     PromoteButton,
     PromoteInformationButton,
@@ -14,7 +15,7 @@ class PromoteView(discord.ui.LayoutView):
         self.add_item(
             discord.ui.Container(
                 discord.ui.TextDisplay(
-                    "## <:digi:1561217043376906421> GrowLink Promote\n"
+                    f"## {get_emoji('digi')} GrowLink Promote\n"
                     "Promote your Growtopia items, worlds, or services "
                     "across Discord servers that have GrowLink Promote enabled."
                 ),

@@ -1,6 +1,7 @@
 
 import discord
 
+from database.growlink.emoji_manager import get_emoji
 from views.promote.promote_buttons import (
     PromoteButton,
     PromoteInformationButton,
@@ -19,7 +20,7 @@ class PromotionWebhookView(discord.ui.LayoutView):
 
         container_items = [
             discord.ui.TextDisplay(
-                "## <a:megaphone:1561145155937902712> GrowLink Promotion"
+                f"## {get_emoji('digi')} GrowLink Promotion"
             ),
             discord.ui.Separator(visible=True),
         ]

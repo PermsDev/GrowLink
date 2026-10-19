@@ -1,12 +1,13 @@
 
 import discord
 
+from database.growlink.emoji_manager import get_emoji
 
 class PromoteInformationView:
     @staticmethod
     async def send(interaction: discord.Interaction):
         await interaction.response.send_message(
-            "## ℹ️ About GrowLink Promote\n"
+            f"## {get_emoji('guide')} About GrowLink Promote\n"
             "GrowLink Promote allows you to promote Growtopia items, "
             "worlds, or services you offer across Discord servers "
             "that have this feature enabled.\n\n"
@@ -15,6 +16,6 @@ class PromoteInformationView:
             "2. Provide the requested promotion details.\n"
             "3. Your promotion can be distributed to servers "
             "that have GrowLink Promote enabled.\n\n"
-            "Promotion submission and distribution are not available yet.",
+            f"-# {get_emoji('warning')} Promotion submission and distribution are currently in beta testing.",
             ephemeral=True,
         )

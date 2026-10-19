@@ -3,6 +3,7 @@ import time
 
 import discord
 
+from database.growlink.emoji_manager import get_emoji
 from views.promote.promotion.promotion_modal import PromoteModal
 from views.promote.information.views import PromoteInformationView
 
@@ -13,7 +14,7 @@ class PromoteButton(discord.ui.Button):
     def __init__(self):
         super().__init__(
             label="Promote Item / World",
-            emoji="<a:megaphone:1561145155937902712>",
+            emoji=get_emoji("megaphone"),
             style=discord.ButtonStyle.success,
             custom_id="growlink:promote:start",
         )
@@ -47,7 +48,7 @@ class PromoteInformationButton(discord.ui.Button):
     def __init__(self):
         super().__init__(
             label="Information",
-            emoji="ℹ️",
+            emoji=get_emoji("guide"),
             style=discord.ButtonStyle.secondary,
             custom_id="growlink:promote:info",
         )

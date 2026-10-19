@@ -1,5 +1,6 @@
 import discord
 
+from database.growlink.emoji_manager import get_emoji
 from views.promote.promotion.review_button import (
     EditPromotionButton,
     SubmitPromotionButton,
@@ -17,7 +18,7 @@ class PromotionReviewView(discord.ui.LayoutView):
         self.add_item(
             discord.ui.Container(
                 discord.ui.TextDisplay(
-                    "## <a:megaphone:1561145155937902712> Review Your Promotion"
+                    f"## {get_emoji('digi')} Review Your Promotion"
                 ),
                 discord.ui.Separator(visible=True),
                 discord.ui.TextDisplay(
@@ -46,7 +47,7 @@ class PromotionReviewView(discord.ui.LayoutView):
         self.add_item(
             discord.ui.Container(
                 discord.ui.TextDisplay(
-                    "## <a:megaphone:1561145155937902712> Review Your Promotion"
+                    f"## {get_emoji('digi')} Review Your Promotion"
                 ),
                 discord.ui.Separator(visible=True),
                 discord.ui.TextDisplay(
