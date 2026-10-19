@@ -4,7 +4,7 @@ from database.main.user.intro_manager import (
     get_introduction
 )
 
-from views.partnership.introduction.introduction_modal import (
+from views.introduction.introduction_modal import (
     IntroductionModal
 )
 

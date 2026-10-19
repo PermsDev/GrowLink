@@ -5,7 +5,7 @@ from database.growlink.phishing.phishing_review_manager import (
     get_reviews_by_action_id,
 )
 
-from views.member.phishing.phishing_review_view import (
+from views.phishing.phishing_review_view import (
     PhishingReviewView,
 )
 

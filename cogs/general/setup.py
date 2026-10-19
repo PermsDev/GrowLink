@@ -1,24 +1,27 @@
-import discord
+import logging
+import time
 
+import discord
 from discord import app_commands
 from discord.ext import commands
 
-from config.constants import INTRO_ROLE_KEY
-
-from utils.guilds.guild_access import require_partnership_access
-
-from services.partnership.setup.intro_panel import create_intro_panel
-from services.partnership.setup.promote_panel import create_promote_panel
-
-from database.growlink.role_manager import upsert_role
-
-from database.growlink.feature_manager import (
-    set_feature_active,
+from config.constants import (
+    INTRO_ROLE_KEY,
     FEATURE_INTRODUCTION,
+    FEATURE_PROMOTION,
 )
 
-class SetupGroup(app_commands.Group):
+from services.setup.intro_panel import create_intro_panel
+from services.setup.promote_panel import create_promote_panel
 
+from database.growlink.role_manager import upsert_role
+from database.growlink.feature_manager import set_feature_active
+
+
+logger = logging.getLogger("growlink")
+
+
+class SetupGroup(app_commands.Group):
     def __init__(self):
         super().__init__(
             name="setup",
@@ -46,12 +49,99 @@ class SetupGroup(app_commands.Group):
 
         return True
 
-class Setup(commands.Cog):
 
+class Setup(commands.Cog):
     setup_group = SetupGroup()
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+
+    async def acknowledge_interaction(
+        self,
+        interaction: discord.Interaction,
+        command_name: str,
+    ) -> bool:
+        started_at = time.monotonic()
+
+        logger.info(
+            "[Setup %s] Sending initial response. "
+            "Interaction ID: %s | Created at: %s",
+            command_name,
+            interaction.id,
+            interaction.created_at.isoformat(),
+        )
+
+        try:
+            await interaction.response.send_message(
+                f"⏳ Panel {command_name} sedang dibuat...",
+                ephemeral=True,
+            )
+
+            elapsed = time.monotonic() - started_at
+
+            logger.info(
+                "[Setup %s] Initial response sent in %.3f seconds. "
+                "Interaction ID: %s",
+                command_name,
+                elapsed,
+                interaction.id,
+            )
+
+            return True
+
+        except discord.NotFound:
+            elapsed = time.monotonic() - started_at
+
+            logger.exception(
+                "[Setup %s] Interaction not found after %.3f seconds. "
+                "Interaction ID: %s",
+                command_name,
+                elapsed,
+                interaction.id,
+            )
+
+            return False
+
+        except discord.HTTPException:
+            elapsed = time.monotonic() - started_at
+
+            logger.exception(
+                "[Setup %s] Failed to acknowledge interaction after "
+                "%.3f seconds. Interaction ID: %s",
+                command_name,
+                elapsed,
+                interaction.id,
+            )
+
+            return False
+
+    async def send_result(
+        self,
+        interaction: discord.Interaction,
+        message: str,
+        command_name: str,
+    ) -> None:
+        try:
+            await interaction.edit_original_response(
+                content=message,
+                embed=None,
+                view=None,
+            )
+
+            logger.info(
+                "[Setup %s] Initial response edited successfully. "
+                "Interaction ID: %s",
+                command_name,
+                interaction.id,
+            )
+
+        except discord.HTTPException:
+            logger.exception(
+                "[Setup %s] Failed to edit the original response. "
+                "Interaction ID: %s",
+                command_name,
+                interaction.id,
+            )
 
     @setup_group.command(
         name="intro",
@@ -67,33 +157,77 @@ class Setup(commands.Cog):
         channel: discord.TextChannel,
         role: discord.Role | None = None,
     ):
-        # if not await require_partnership_access(interaction):
-        #     return
+        callback_started_at = time.monotonic()
 
-        await interaction.response.defer(ephemeral=True)
-
-        await create_intro_panel(
-            guild=interaction.guild,
-            channel=channel,
+        logger.info(
+            "[Setup Intro] Callback started. "
+            "Interaction ID: %s | Created at: %s",
+            interaction.id,
+            interaction.created_at.isoformat(),
         )
 
-        await set_feature_active(
-            guild_id=interaction.guild.id,
-            feature_type=FEATURE_INTRODUCTION,
-            active=True,
+        acknowledged = await self.acknowledge_interaction(
+            interaction,
+            "Intro",
         )
 
-        if role is not None:
-            await upsert_role(
-                guild_id=interaction.guild.id,
-                role_key=INTRO_ROLE_KEY,
-                role_id=role.id,
+        logger.info(
+            "[Setup Intro] Acknowledgement completed after %.3f seconds. "
+            "Interaction ID: %s | Success: %s",
+            time.monotonic() - callback_started_at,
+            interaction.id,
+            acknowledged,
+        )
+
+        if not acknowledged:
+            return
+
+        try:
+            await create_intro_panel(
+                guild=interaction.guild,
+                channel=channel,
             )
 
-        await interaction.followup.send(
-            f"✅ Introduction panel created in {channel.mention}.",
-            ephemeral=True,
-        )
+            await set_feature_active(
+                guild_id=interaction.guild.id,
+                feature_type=FEATURE_INTRODUCTION,
+                active=True,
+            )
+
+            if role is not None:
+                await upsert_role(
+                    guild_id=interaction.guild.id,
+                    role_key=INTRO_ROLE_KEY,
+                    role_id=role.id,
+                )
+
+            await self.send_result(
+                interaction,
+                f"✅ Introduction panel created in {channel.mention}.",
+                "Intro",
+            )
+
+            logger.info(
+                "[Setup Intro] Panel created. "
+                "Guild ID: %s | Channel ID: %s | Interaction ID: %s",
+                interaction.guild.id,
+                channel.id,
+                interaction.id,
+            )
+
+        except Exception:
+            logger.exception(
+                "[Setup Intro] Failed to create the Introduction panel. "
+                "Interaction ID: %s",
+                interaction.id,
+            )
+
+            await self.send_result(
+                interaction,
+                "❌ Failed to create the Introduction panel. "
+                "Check the bot logs.",
+                "Intro",
+            )
 
     @setup_group.command(
         name="promote",
@@ -107,20 +241,70 @@ class Setup(commands.Cog):
         interaction: discord.Interaction,
         channel: discord.TextChannel,
     ):
-        # if not await require_partnership_access(interaction):
-        #     return
+        callback_started_at = time.monotonic()
 
-        await interaction.response.defer(ephemeral=True)
-
-        await create_promote_panel(
-            guild=interaction.guild,
-            channel=channel,
+        logger.info(
+            "[Setup Promote] Callback started. "
+            "Interaction ID: %s | Created at: %s",
+            interaction.id,
+            interaction.created_at.isoformat(),
         )
 
-        await interaction.followup.send(
-            f"✅ Promote panel created in {channel.mention}.",
-            ephemeral=True,
+        acknowledged = await self.acknowledge_interaction(
+            interaction,
+            "Promote",
         )
+
+        logger.info(
+            "[Setup Promote] Acknowledgement completed after %.3f seconds. "
+            "Interaction ID: %s | Success: %s",
+            time.monotonic() - callback_started_at,
+            interaction.id,
+            acknowledged,
+        )
+
+        if not acknowledged:
+            return
+
+        try:
+            await create_promote_panel(
+                guild=interaction.guild,
+                channel=channel,
+            )
+
+            await set_feature_active(
+                guild_id=interaction.guild.id,
+                feature_type=FEATURE_PROMOTION,
+                active=True,
+            )
+
+            await self.send_result(
+                interaction,
+                f"✅ Promote panel created in {channel.mention}.",
+                "Promote",
+            )
+
+            logger.info(
+                "[Setup Promote] Panel created. "
+                "Guild ID: %s | Channel ID: %s | Interaction ID: %s",
+                interaction.guild.id,
+                channel.id,
+                interaction.id,
+            )
+
+        except Exception:
+            logger.exception(
+                "[Setup Promote] Failed to create the Promote panel. "
+                "Interaction ID: %s",
+                interaction.id,
+            )
+
+            await self.send_result(
+                interaction,
+                "❌ Failed to create the Promote panel. "
+                "Check the bot logs.",
+                "Promote",
+            )
 
 
 async def setup(bot: commands.Bot):

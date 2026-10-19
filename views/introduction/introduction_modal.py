@@ -5,11 +5,11 @@ from database.main.user.intro_manager import (
     save_introduction,
 )
 
-from services.partnership.display_name.display_name_service import (
+from services.display_name.display_name_service import (
     update_member_display_name,
 )
 
-from views.partnership.introduction.introduction_role_service import (
+from views.introduction.introduction_role_service import (
     give_introduction_role,
 )
 

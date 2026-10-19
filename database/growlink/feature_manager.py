@@ -1,13 +1,5 @@
 from database.database import get_grow_pool as get_pool
 
-
-# ==================================================
-# FEATURE TYPES
-# ==================================================
-
-FEATURE_INTRODUCTION = "introduction"
-
-
 # ==================================================
 # GET FEATURE
 # ==================================================
@@ -166,24 +158,55 @@ async def is_feature_active(
         
         
 # ==================================================
-# GET ACTIVE FEATURE GUILD IDs (Khusus fitur introduction)
+# GET ACTIVE FEATURE GUILD IDs
 # ==================================================
 
-async def get_active_feature_guild_ids(feature_id: int = 1) -> list[int]:
+
+async def get_active_feature_guild_ids(feature_type: str) -> list[int]:
     pool = get_pool()
 
     async with pool.acquire() as conn:
         async with conn.cursor() as cursor:
             await cursor.execute(
                 """
-                SELECT guild_id
-                FROM gl_feature_active
-                WHERE feature_id = %s
-                AND active = '1'
+                SELECT gfa.guild_id
+                FROM gl_feature_active AS gfa
+                INNER JOIN gl_feature AS gf
+                    ON gf.feature_id = gfa.feature_id
+                WHERE gf.feature_type = %s
+                  AND gfa.active = '1'
                 """,
-                (feature_id,),
+                (feature_type,),
             )
 
             rows = await cursor.fetchall()
 
     return [int(row[0]) for row in rows]
+
+async def deactivate_feature(
+    guild_id: int,
+    feature_type: str,
+) -> None:
+    feature_id = await get_feature_id(feature_type)
+
+    if feature_id is None:
+        return
+
+    pool = get_pool()
+
+    async with pool.acquire() as conn:
+        async with conn.cursor() as cursor:
+            await cursor.execute(
+                """
+                UPDATE gl_feature_active
+                SET active = '0'
+                WHERE guild_id = %s
+                  AND feature_id = %s
+                """,
+                (
+                    guild_id,
+                    feature_id,
+                ),
+            )
+
+            await conn.commit()

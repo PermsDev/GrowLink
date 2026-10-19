@@ -1,6 +1,6 @@
 import discord
 
-from views.partnership.introduction.introduction_button import (
+from views.introduction.introduction_button import (
     IntroductionButton,
 )
 

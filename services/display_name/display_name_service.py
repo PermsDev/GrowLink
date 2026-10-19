@@ -1,5 +1,7 @@
 import discord
 
+from config.constants import FEATURE_INTRODUCTION
+
 from database.main.user.intro_manager import (
     get_introduction,
 )
@@ -32,7 +34,7 @@ async def update_member_display_name(
         }
 
     guild_ids = await get_active_feature_guild_ids(
-        feature_id=1
+        feature_type=FEATURE_INTRODUCTION
     )
 
     if not guild_ids:
@@ -54,9 +56,7 @@ async def update_member_display_name(
 
         if member is None:
             try:
-                member = await guild.fetch_member(
-                    user_id
-                )
+                member = await guild.fetch_member(user_id)
             except discord.NotFound:
                 results[guild_id] = "not_in_guild"
                 continue

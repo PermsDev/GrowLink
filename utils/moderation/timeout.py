@@ -6,7 +6,7 @@ from utils.moderation.delete_scheduler import (
     register_delete,
 )
 
-from views.member.moderation.timeout_view import (
+from views.moderation.timeout_view import (
     TimeoutView,
 )
 
