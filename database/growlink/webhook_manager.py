@@ -2,14 +2,14 @@
 import discord
 from asyncmy.cursors import DictCursor
 
-from database.database import get_grow_pool
+from database.database import get_grow_pool as get_pool
 
 
 TABLE_NAME = "gl_webhooks"
 
 
 async def get_webhook_by_channel(channel_id: int) -> dict | None:
-    pool = get_grow_pool()
+    pool = get_pool()
 
     async with pool.acquire() as conn:
         async with conn.cursor(DictCursor) as cursor:
@@ -34,7 +34,7 @@ async def save_webhook(
     if not webhook.token:
         raise ValueError("Webhook token is unavailable.")
 
-    pool = get_grow_pool()
+    pool = get_pool()
 
     async with pool.acquire() as conn:
         async with conn.cursor() as cursor:
