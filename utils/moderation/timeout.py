@@ -2,13 +2,8 @@ from datetime import timedelta
 
 import discord
 
-from utils.moderation.delete_scheduler import (
-    register_delete,
-)
-
-from views.moderation.timeout_view import (
-    TimeoutView,
-)
+from utils.moderation.delete_scheduler import register_delete
+from views.moderation.timeout_view import TimeoutView
 
 
 async def timeout_member(
@@ -16,41 +11,25 @@ async def timeout_member(
     duration: timedelta,
     reason: str | None = None,
 ) -> bool:
-
     try:
-
         await member.timeout(
             duration,
             reason=reason,
         )
-
     except (
         discord.Forbidden,
         discord.HTTPException,
     ):
-
         return False
 
     try:
-
-        duration_minutes = int(
-            duration.total_seconds() / 60
-        )
+        duration_minutes = int(duration.total_seconds() / 60)
 
         if duration_minutes < 60:
-
-            duration_text = (
-                f"{duration_minutes} minutes"
-            )
-
+            duration_text = f"{duration_minutes} minutes"
         elif duration_minutes % 60 == 0:
-
-            duration_text = (
-                f"{duration_minutes // 60} hours"
-            )
-
+            duration_text = f"{duration_minutes // 60} hours"
         else:
-
             duration_text = (
                 f"{duration_minutes // 60} hours "
                 f"{duration_minutes % 60} minutes"
@@ -79,11 +58,7 @@ async def timeout_member(
 
         embed.add_field(
             name="Reason",
-            value=(
-                f"`{reason}`"
-                if reason
-                else "No reason provided."
-            ),
+            value=f"`{reason}`" if reason else "No reason provided.",
             inline=False,
         )
 
@@ -104,8 +79,8 @@ async def timeout_member(
             view=view,
         )
 
-        delete_after = (
-            duration + timedelta(hours=12)
+        delete_after = int(
+            (duration + timedelta(hours=12)).total_seconds()
         )
 
         await register_delete(
@@ -118,7 +93,6 @@ async def timeout_member(
         discord.Forbidden,
         discord.HTTPException,
     ):
-
         pass
 
     return True

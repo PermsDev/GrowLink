@@ -16,6 +16,7 @@ from database.database import (
     close_databases,
 )
 
+from database.growlink.emoji_manager import reload_emojis
 from events.guild.guild_join import handle_guild_join
 from events.guild.guild_remove import handle_guild_remove
 from events.member.member_join import handle_member_join
@@ -166,6 +167,16 @@ async def on_ready():
     except Exception:
         logger.exception("Gagal memperbarui presence bot.")
 
+    # ======================
+    # LOAD EMOJIS
+    # ======================
+
+    try:
+        await reload_emojis()
+        logger.info("Cache emoji berhasil dimuat ulang.")
+    except Exception:
+        logger.exception("Gagal memuat emoji dari database.")
+
     if _ready_synced:
         logger.info("Inisialisasi on_ready sudah dilakukan sebelumnya.")
         return
@@ -190,7 +201,6 @@ async def on_ready():
             name="growlink-delete-checker",
         )
         logger.info("Delete checker dimulai.")
-
 
 # ======================
 # GUILD EVENTS

@@ -15,22 +15,17 @@ from utils.parse_duration import parse_duration
 async def register_delete(
     channel_id: int,
     message_id: int,
-    delete_after
+    delete_after,
 ):
     if isinstance(delete_after, str):
-        delete_after = parse_duration(
-            delete_after
-        )
-        
-    expire_time = (
-        time.time()
-        + delete_after.total_seconds()
-    )
+        delete_after = parse_duration(delete_after)
+
+    expire_time = time.time() + delete_after
 
     await upsert_delete_queue(
         channel_id,
         message_id,
-        expire_time
+        expire_time,
     )
 
 
