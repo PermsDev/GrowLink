@@ -61,11 +61,27 @@ logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
 )
 
+class DiscordReconnectFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        return not (
+            record.name == "discord.gateway"
+            and "has successfully RESUMED session" in record.getMessage()
+        )
+
+
+reconnect_filter = DiscordReconnectFilter()
+
+logging.getLogger("discord.gateway").addFilter(
+    reconnect_filter
+)
+
+for handler in logging.getLogger().handlers:
+    handler.addFilter(reconnect_filter)
+
 logging.getLogger("asyncmy").setLevel(logging.ERROR)
 logging.getLogger("discord").setLevel(logging.INFO)
 
 logger = logging.getLogger("growlink")
-
 
 # ======================
 # INTENTS
