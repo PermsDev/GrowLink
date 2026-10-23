@@ -130,70 +130,31 @@ async def handle_message_create(
         "phishing_count"
     ]
 
-    print()
-    print("=" * 50)
-    print("PHISHING IMAGE DETECTION")
-    print("=" * 50)
+    if any(detection.is_phishing for detection in results):
+        print()
+        print("=" * 50)
+        print("PHISHING IMAGE DETECTION")
+        print("=" * 50)
 
-    print(
-        f"Server        : {guild_name}"
-    )
+        print(f"Server         : {guild_name}")
+        print(f"Channel        : #{channel_name}")
+        print(f"User ID        : {message.author.id}")
+        print(f"Images         : {total_images}")
+        print(f"Phishing       : {phishing_count}")
+        print(f"Overall Status : {status.upper()}")
 
-    print(
-        f"Guild ID      : {guild_id}"
-    )
+        print("-" * 50)
 
-    print(
-        f"Channel       : #{channel_name}"
-    )
+        for index, detection in enumerate(results, start=1):
+            print(
+                f"[IMAGE {index}] "
+                f"Similarity: {detection.similarity:.2f}% | "
+                f"Matched ID: {detection.matched_image_id} | "
+                f"Phishing: {detection.is_phishing}"
+            )
 
-    print(
-        f"Channel ID    : {channel_id}"
-    )
-
-    print(
-        f"User          : {message.author}"
-    )
-
-    print(
-        f"User ID       : {message.author.id}"
-    )
-
-    print(
-        f"Images        : {total_images}"
-    )
-
-    print(
-        f"Phishing      : {phishing_count}"
-    )
-
-    print(
-        "Threshold     : 80.00%"
-    )
-
-    print(
-        f"Overall Status : {status.upper()}"
-    )
-
-    print("-" * 50)
-
-    for index, detection in enumerate(
-        results,
-        start=1,
-    ):
-
-        print(
-            f"[IMAGE {index}] "
-            f"Similarity: "
-            f"{detection.similarity:.2f}% | "
-            f"Matched ID: "
-            f"{detection.matched_image_id} | "
-            f"Phishing: "
-            f"{detection.is_phishing}"
-        )
-
-    print("=" * 50)
-    print()
+        print("=" * 50)
+        print()
 
     if status == "review":
 
