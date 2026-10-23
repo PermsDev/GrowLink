@@ -4,3 +4,4 @@ asyncmy
 Pillow
 ImageHash
 aiohttp
+PyNaCl
