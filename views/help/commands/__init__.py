@@ -1,11 +1,23 @@
 
-from . import setup_intro
-from . import setup_promote
-from . import ping
+import json
+from pathlib import Path
+
+COMMANDS_DIR = Path(__file__).parent
 
 
-COMMAND_HELP = {
-    setup_intro.NAME: setup_intro,
-    setup_promote.NAME: setup_promote,
-    ping.NAME: ping,
-}
+def load_commands():
+    commands = {}
+
+    for file_path in COMMANDS_DIR.glob("*.json"):
+        with file_path.open("r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        name = data.get("name")
+
+        if name:
+            commands[name] = data
+
+    return commands
+
+
+COMMAND_HELP = load_commands()

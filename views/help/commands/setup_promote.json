@@ -1,0 +1,52 @@
+
+{
+    "name": "setup promote",
+    "translations": {
+        "en": {
+            "description": "Configure the item or world promotion panel.",
+            "details": "This command allows administrators to configure the Promote panel in their Discord server.\n\nThe panel is designed to let members submit promotions for items, worlds, or services. The feature aims to help promotions reach communities across servers using GrowLink.\n\nPromote is currently in beta. Submission and distribution availability depends on the active feature implementation.",
+            "options": [
+                {
+                    "name": "channel",
+                    "description": "The channel where the Promote panel will be sent.",
+                    "required": true
+                }
+            ],
+            "usage": [
+                "`/setup promote` channel: `<channel>`"
+            ],
+            "permissions": [
+                "Administrator"
+            ],
+            "examples": [
+                {
+                    "command": "`/setup promote` channel: `#promotion`",
+                    "description": "Create or update the Promote panel."
+                }
+            ]
+        },
+        "id": {
+            "description": "Mengatur panel promosi item atau world.",
+            "details": "Command ini digunakan oleh administrator untuk mengatur panel Promote di server Discord.\n\nPanel ini memungkinkan anggota mengajukan promosi item, world, atau layanan. Fitur ini bertujuan membantu promosi menjangkau komunitas di berbagai server yang menggunakan GrowLink.\n\nPromote saat ini masih dalam tahap beta. Ketersediaan pengajuan dan distribusi bergantung pada implementasi fitur yang sedang aktif.",
+            "options": [
+                {
+                    "name": "channel",
+                    "description": "Channel tempat panel Promote akan dikirim.",
+                    "required": true
+                }
+            ],
+            "usage": [
+                "`/setup promote` channel: `<channel>`"
+            ],
+            "permissions": [
+                "Administrator"
+            ],
+            "examples": [
+                {
+                    "command": "`/setup promote` channel: `#promotion`",
+                    "description": "Membuat atau memperbarui panel Promote."
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,69 @@
+{
+  "name": "setup intro",
+  "translations": {
+    "en": {
+      "description": "Configure the Introduction panel for members to introduce their GrowID.",
+      "details": "This command allows administrators to configure the Introduction feature in a Discord server.\n\nThe Introduction panel allows members to submit their game identity information through a form provided by GrowLink.\n\nKey features:\n- Verify member identities\n- Change display names using GrowID\n- Synchronize GrowID data across all servers using GrowLink\n- Assign a role to members after they complete the Introduction form\n\nUse this command to create or update the Introduction panel according to your server configuration.",
+      "options": [
+        {
+          "name": "channel",
+          "description": "The channel where the Introduction panel will be sent.",
+          "required": true
+        },
+        {
+          "name": "role",
+          "description": "The role assigned to members after completing the Introduction form.",
+          "required": false
+        }
+      ],
+      "usage": [
+        "`/setup intro` **channel:** `<channel>` **role:** `<role>`"
+      ],
+      "permissions": [
+        "Administrator"
+      ],
+      "examples": [
+        {
+          "command": "`/setup intro` **channel:** `#introduction`",
+          "description": "Create the Introduction panel in the specified channel."
+        },
+        {
+          "command": "`/setup intro` **channel:** `#introduction` **role:** `@Growtopia`",
+          "description": "Create the Introduction panel and configure a role for members. This is commonly used to require members to complete verification before accessing other server channels. Make sure to configure channel permissions correctly."
+        }
+      ]
+    },
+    "id": {
+      "description": "Mengatur panel Introduction untuk memperkenalkan GrowID anggota.",
+      "details": "Command ini digunakan oleh administrator untuk mengatur fitur Introduction di server Discord.\n\nPanel Introduction memungkinkan anggota mengirimkan informasi identitas game mereka melalui formulir yang disediakan oleh GrowLink.\n\nFitur utama:\n- Verifikasi identitas anggota\n- Mengubah display name menggunakan GrowID\n- Sinkronisasi data GrowID di semua server yang menggunakan GrowLink\n- Memberikan role kepada anggota setelah menyelesaikan formulir Introduction\n\nGunakan command ini untuk membuat atau memperbarui panel Introduction sesuai konfigurasi server.",
+      "options": [
+        {
+          "name": "channel",
+          "description": "Channel tempat panel Introduction akan dikirim.",
+          "required": true
+        },
+        {
+          "name": "role",
+          "description": "Role yang diberikan kepada anggota setelah mengisi formulir Introduction.",
+          "required": false
+        }
+      ],
+      "usage": [
+        "`/setup intro` **channel:** `<channel>` **role:** `<role>`"
+      ],
+      "permissions": [
+        "Administrator"
+      ],
+      "examples": [
+        {
+          "command": "`/setup intro` **channel:** `#introduction`",
+          "description": "Membuat panel Introduction di channel yang ditentukan."
+        },
+        {
+          "command": "`/setup intro` **channel:** `#introduction` **role:** `@Growtopia`",
+          "description": "Membuat panel Introduction di channel yang ditentukan sekaligus mengatur role anggota. Biasanya digunakan untuk mewajibkan anggota melakukan verifikasi sebelum mengakses channel server lainnya. Pastikan permission channel dikonfigurasi dengan benar."
+        }
+      ]
+    }
+  }
+}

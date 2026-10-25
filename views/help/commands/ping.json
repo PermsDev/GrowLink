@@ -1,0 +1,39 @@
+{
+  "name": "ping",
+  "translations": {
+    "en": {
+      "description": "Check whether GrowLink is online and display the bot's latency.",
+      "details": "This command checks GrowLink's connection status to the Discord Gateway using the bot's latency value.\n\nLatency is displayed in milliseconds (ms). Lower values generally indicate a faster connection response.\n\nThis command does not test overall internet connection speed.",
+      "options": [],
+      "usage": [
+        "/ping"
+      ],
+      "permissions": [
+        "Public"
+      ],
+      "examples": [
+        {
+          "command": "/ping",
+          "description": "Check whether GrowLink is online and view the bot's latency."
+        }
+      ]
+    },
+    "id": {
+      "description": "Memeriksa apakah GrowLink sedang online dan menampilkan latency bot.",
+      "details": "Command ini digunakan untuk memeriksa status koneksi GrowLink ke Discord Gateway melalui nilai latency bot.\n\nLatency ditampilkan dalam milidetik (ms). Nilai yang lebih rendah umumnya menunjukkan respons koneksi yang lebih cepat.\n\nCommand ini tidak melakukan pengujian kecepatan internet secara keseluruhan.",
+      "options": [],
+      "usage": [
+        "/ping"
+      ],
+      "permissions": [
+        "Public"
+      ],
+      "examples": [
+        {
+          "command": "/ping",
+          "description": "Memeriksa apakah GrowLink sedang online dan melihat latency bot."
+        }
+      ]
+    }
+  }
+}
