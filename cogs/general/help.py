@@ -14,8 +14,13 @@ class HelpCog(commands.Cog):
         result = []
 
         for command in self.bot.tree.walk_commands():
-            if isinstance(command, app_commands.Command):
-                result.append(command)
+            if not isinstance(command, app_commands.Command):
+                continue
+
+            if command.qualified_name == "help":
+                continue
+
+            result.append(command)
 
         return sorted(
             result,
