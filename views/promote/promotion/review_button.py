@@ -160,12 +160,12 @@ class SubmitPromotionButton(discord.ui.Button):
 
                     sent_count += 1
 
-                    logger.info(
-                        "Promotion sent successfully to guild %s, "
-                        "channel %s",
-                        guild_id,
-                        channel_id,
-                    )
+                    # logger.info(
+                    #     "Promotion sent successfully to guild %s, "
+                    #     "channel %s",
+                    #     guild_id,
+                    #     channel_id,
+                    # )
 
                 except discord.HTTPException:
                     logger.exception(

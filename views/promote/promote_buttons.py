@@ -23,23 +23,12 @@ class PromoteButton(discord.ui.Button):
         import time
 
         started = time.monotonic()
-        print(f"[Promote] Callback started: {interaction.id}")
 
         try:
             modal = PromoteModal()
-            print(
-                f"[Promote] Modal constructed in "
-                f"{time.monotonic() - started:.3f}s"
-            )
-
             await interaction.response.send_modal(modal)
-
-            print(
-                f"[Promote] Modal opened in "
-                f"{time.monotonic() - started:.3f}s"
-            )
         except discord.HTTPException as error:
-            print(
+            logger.error(
                 f"[Promote] Failed after "
                 f"{time.monotonic() - started:.3f}s: {error}"
             )
