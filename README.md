@@ -14,3 +14,5 @@ GrowLink is a Discord bot designed to simplify GrowID verification, improve comm
 - **Interactive Help System:** Access command documentation in multiple languages through Discord Components V2.
 
 GrowLink brings together community management, cross-server connectivity, phishing detection, and moderation tools to help Growtopia communities operate more efficiently and securely.
+
+[Join Community Server](https://discord.gg/DDj2xDHkq5)
