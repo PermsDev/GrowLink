@@ -1,11 +1,8 @@
+
 import discord
 
 from discord import app_commands
 from discord.ext import commands
-
-from utils.guilds.guild_access import (
-    require_general_access,
-)
 
 
 class Ping(commands.Cog):
@@ -18,24 +15,18 @@ class Ping(commands.Cog):
 
     @app_commands.command(
         name="ping",
-        description="Check apakah GrowLink sedang online."
+        description="Check whether GrowLink is online."
     )
     async def ping(
         self,
         interaction: discord.Interaction
     ):
-
-        if not await require_general_access(
-            interaction
-        ):
-            return
-
         latency = round(
             self.bot.latency * 1000
         )
 
         await interaction.response.send_message(
-            f"🏓 Pong! `{latency}ms`"
+            f"🏓 Pong! Latency: `{latency}ms`"
         )
 
 
