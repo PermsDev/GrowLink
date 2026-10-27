@@ -2,12 +2,13 @@
 import discord
 
 from views.help.commands import COMMAND_HELP
+from database.growlink.emoji_manager import get_emoji
 from views.help.language_select import LanguageSelect
 
 
 class HelpView(discord.ui.LayoutView):
     LABELS = {
-        "title": "GrowLink Help",
+        "title": f"{get_emoji('digi')} GrowLink Help",
         "details": "Description",
         "options": "Options",
         "usage": "Usage",
