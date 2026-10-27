@@ -1,11 +1,7 @@
-
 import discord
 from asyncmy.cursors import DictCursor
 
 from database.database import get_grow_pool as get_pool
-
-
-TABLE_NAME = "gl_webhooks"
 
 
 async def get_webhook_by_channel(channel_id: int) -> dict | None:
@@ -62,14 +58,45 @@ async def save_webhook(
         await conn.commit()
 
 
+async def replace_channel_webhook(
+    bot: discord.Client,
+    channel: discord.TextChannel,
+) -> discord.Webhook:
+    if channel.guild is None:
+        raise ValueError("The channel must belong to a guild.")
+
+    saved = await get_webhook_by_channel(channel.id)
+
+    if saved and saved["webhook_id"]:
+        old_webhook_id = int(saved["webhook_id"])
+
+        existing_webhooks = await channel.webhooks()
+
+        for old_webhook in existing_webhooks:
+            if old_webhook.id == old_webhook_id:
+                await old_webhook.delete(
+                    reason="Replace GrowLink webhook during Promote setup"
+                )
+                break
+
+    webhook = await channel.create_webhook(
+        name="GrowLink",
+        reason="Create new GrowLink webhook during Promote setup",
+    )
+
+    await save_webhook(
+        guild_id=channel.guild.id,
+        channel_id=channel.id,
+        webhook=webhook,
+    )
+
+    return webhook
+
+
 async def ensure_channel_webhook(
     bot: discord.Client,
     channel: discord.TextChannel,
 ) -> discord.Webhook:
-    """
-    Return an existing usable webhook or create and save a new one.
-    """
-
     if channel.guild is None:
         raise ValueError("The channel must belong to a guild.")
 
@@ -90,7 +117,6 @@ async def ensure_channel_webhook(
                     webhook_url,
                     client=bot,
                 )
-
                 await webhook.fetch()
                 return webhook
 

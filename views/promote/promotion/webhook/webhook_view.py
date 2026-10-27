@@ -1,4 +1,3 @@
-
 import discord
 
 from database.growlink.emoji_manager import get_emoji
@@ -13,8 +12,8 @@ class PromotionWebhookView(discord.ui.LayoutView):
         self,
         world_name: str,
         description: str,
-        bot_name: str,
         submitter: discord.abc.User,
+        bot_name: str = "GrowLink",
     ):
         super().__init__(timeout=None)
 
@@ -40,7 +39,8 @@ class PromotionWebhookView(discord.ui.LayoutView):
                 discord.ui.TextDisplay(f"\n\n{description}"),
                 discord.ui.Separator(visible=True),
                 discord.ui.TextDisplay(
-                    f"-# Submitted via {bot_name} by {submitter}"
+                    f"-# Submitted by {submitter} | "
+                    f"`{discord.utils.utcnow().strftime('%A, %d %B %Y')}`"
                 ),
             ]
         )

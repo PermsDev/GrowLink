@@ -160,6 +160,7 @@ class Setup(commands.Cog):
 
         try:
             await create_promote_panel(
+                bot=interaction.client,
                 guild=interaction.guild,
                 channel=channel,
             )

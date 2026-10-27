@@ -1,10 +1,11 @@
-
 import logging
-
 import discord
 
 from config.constants import FEATURE_PROMOTION, PROMOTE_CHANNEL_KEY
-from database.growlink.feature_manager import get_active_feature_guild_ids, deactivate_feature
+from database.growlink.feature_manager import (
+    get_active_feature_guild_ids,
+    deactivate_feature,
+)
 from database.growlink.setup_manager import get_channel_id
 from database.growlink.webhook_manager import ensure_channel_webhook
 from database.main.game_manager import get_game_value
@@ -44,7 +45,7 @@ class SubmitPromotionButton(discord.ui.Button):
                 PromotionWebhookView,
             )
 
-            growid = await get_game_value(
+            await get_game_value(
                 user_id=interaction.user.id,
                 game_key="growtopia",
             )
@@ -153,19 +154,18 @@ class SubmitPromotionButton(discord.ui.Button):
 
                     await webhook.send(
                         view=webhook_view,
-                        username=growid or "GrowLink",
-                        avatar_url=submitter.display_avatar.url,
+                        username=(
+                            bot_user.name if bot_user else "GrowLink"
+                        ),
+                        avatar_url=(
+                            bot_user.display_avatar.url
+                            if bot_user
+                            else discord.utils.MISSING
+                        ),
                         allowed_mentions=discord.AllowedMentions.none(),
                     )
 
                     sent_count += 1
-
-                    # logger.info(
-                    #     "Promotion sent successfully to guild %s, "
-                    #     "channel %s",
-                    #     guild_id,
-                    #     channel_id,
-                    # )
 
                 except discord.HTTPException:
                     logger.exception(
@@ -173,12 +173,14 @@ class SubmitPromotionButton(discord.ui.Button):
                         guild_id,
                     )
                     continue
+
                 except (ValueError, TypeError):
                     logger.exception(
                         "Invalid promotion configuration for guild %s",
                         guild_id,
                     )
                     continue
+
                 except Exception:
                     logger.exception(
                         "Unexpected error sending promotion to guild %s",
