@@ -15,18 +15,40 @@ class PromotionReviewView(discord.ui.LayoutView):
         self.description = description
         self.review_message = None
 
+        self.build_view()
+
+    def build_view(self):
+        self.clear_items()
+
+        word_count = len(self.description.split())
+        if word_count < 3:
+            self.add_item(
+                discord.ui.TextDisplay(
+                    "⚠️ **Description Too Short**\n"
+                    "Your promotion description must contain at least "
+                    "3 words. Please edit it before submitting."
+                )
+            )
+
+        container_items = [
+            discord.ui.TextDisplay(
+                f"## {get_emoji('digi')} Review Your Promotion"
+            ),
+            discord.ui.Separator(visible=True),
+            discord.ui.TextDisplay(
+                f"**World Name:** {self.world_name or 'Not provided'}"
+            ),
+        ]
+
+        container_items.append(
+            discord.ui.TextDisplay(
+                f"**Description:**\n{self.description}"
+            )
+        )
+
         self.add_item(
             discord.ui.Container(
-                discord.ui.TextDisplay(
-                    f"## {get_emoji('digi')} Review Your Promotion"
-                ),
-                discord.ui.Separator(visible=True),
-                discord.ui.TextDisplay(
-                    f"**World Name:** {self.world_name or 'Not provided'}"
-                ),
-                discord.ui.TextDisplay(
-                    f"**Description:**\n{self.description}"
-                ),
+                *container_items,
                 accent_colour=discord.Color.green(),
             )
         )
@@ -42,30 +64,7 @@ class PromotionReviewView(discord.ui.LayoutView):
         self.world_name = world_name
         self.description = description
 
-        self.clear_items()
-
-        self.add_item(
-            discord.ui.Container(
-                discord.ui.TextDisplay(
-                    f"## {get_emoji('digi')} Review Your Promotion"
-                ),
-                discord.ui.Separator(visible=True),
-                discord.ui.TextDisplay(
-                    f"**World Name:** {self.world_name or 'Not provided'}"
-                ),
-                discord.ui.TextDisplay(
-                    f"**Description:**\n{self.description}"
-                ),
-                accent_colour=discord.Color.green(),
-            )
-        )
-
-        self.add_item(
-            discord.ui.ActionRow(
-                EditPromotionButton(self),
-                SubmitPromotionButton(self),
-            )
-        )
+        self.build_view()
 
         if self.review_message:
             await self.review_message.edit(view=self)

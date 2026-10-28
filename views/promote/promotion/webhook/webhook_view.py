@@ -40,7 +40,7 @@ class PromotionWebhookView(discord.ui.LayoutView):
                 discord.ui.Separator(visible=True),
                 discord.ui.TextDisplay(
                     f"-# Submitted by {submitter} | "
-                    f"`{discord.utils.utcnow().strftime('%A, %d %B %Y')}`"
+                    f"<t:{int(discord.utils.utcnow().timestamp())}:f>"
                 ),
             ]
         )

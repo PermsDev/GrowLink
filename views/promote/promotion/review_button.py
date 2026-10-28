@@ -1,3 +1,4 @@
+
 import logging
 import discord
 
@@ -31,6 +32,14 @@ class SubmitPromotionButton(discord.ui.Button):
         if interaction.guild is None:
             await interaction.response.send_message(
                 "❌ Promotions can only be submitted from a server.",
+                ephemeral=True,
+            )
+            return
+
+        if len(view.description.split()) < 3:
+            await interaction.response.send_message(
+                "⚠️ Your promotion description is too short. "
+                "Please edit it and provide at least 3 words.",
                 ephemeral=True,
             )
             return
@@ -74,7 +83,6 @@ class SubmitPromotionButton(discord.ui.Button):
                         continue
 
                     channel_id = int(channel_id)
-
                     guild = bot.get_guild(guild_id)
 
                     if guild is None:
