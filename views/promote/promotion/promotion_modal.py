@@ -2,7 +2,7 @@
 import discord
 
 from views.promote.promotion.review_view import PromotionReviewView
-
+from services.emoji.emoji_parser import parse_emojis
 
 class PromoteModal(discord.ui.Modal, title="Promote Item / World"):
     def __init__(
@@ -34,8 +34,8 @@ class PromoteModal(discord.ui.Modal, title="Promote Item / World"):
         self.add_item(self.description)
 
     async def on_submit(self, interaction: discord.Interaction):
-        world_name = self.world_name.value.strip()
-        description = self.description.value.strip()
+        world_name = parse_emojis(self.world_name.value.strip())
+        description = parse_emojis(self.description.value.strip())
 
         if self.review_view:
             await self.review_view.update_review(
