@@ -3,7 +3,7 @@ import discord
 
 from views.help.commands import COMMAND_HELP
 from database.growlink.emoji_manager import get_emoji
-from views.help.language_select import LanguageSelect
+from views.components.language_select import LanguageSelect
 
 
 class HelpView(discord.ui.LayoutView):
@@ -58,6 +58,18 @@ class HelpView(discord.ui.LayoutView):
         return language_data.get(
             key,
             english_data.get(key, default),
+        )
+
+    async def on_language_select(
+        self,
+        interaction: discord.Interaction,
+        language: str,
+    ):
+        self.language = language
+        self._build()
+
+        await interaction.response.edit_message(
+            view=self
         )
 
     def _build(self):
@@ -200,6 +212,11 @@ class HelpView(discord.ui.LayoutView):
             if translations:
                 self.add_item(
                     discord.ui.ActionRow(
-                        LanguageSelect(self)
+                        LanguageSelect(
+                            translations=translations,
+                            current_language=self.language,
+                            callback_handler=self.on_language_select,
+                            custom_id="growlink:help:language",
+                        )
                     )
                 )

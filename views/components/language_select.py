@@ -1,5 +1,5 @@
-
 import discord
+
 
 class LanguageSelect(discord.ui.Select):
     LANGUAGE_LABELS = {
@@ -7,10 +7,15 @@ class LanguageSelect(discord.ui.Select):
         "id": ("Bahasa Indonesia", "🇮🇩"),
     }
 
-    def __init__(self, help_view):
-        self.help_view = help_view
-
-        translations = help_view.help_data.get("translations", {})
+    def __init__(
+        self,
+        translations: dict,
+        current_language: str,
+        callback_handler,
+        custom_id: str = "growlink:language:select",
+    ):
+        self.translations = translations
+        self.callback_handler = callback_handler
 
         options = []
 
@@ -25,7 +30,7 @@ class LanguageSelect(discord.ui.Select):
                     label=label,
                     value=language,
                     emoji=emoji,
-                    default=language == help_view.language,
+                    default=language == current_language,
                 )
             )
 
@@ -34,13 +39,11 @@ class LanguageSelect(discord.ui.Select):
             min_values=1,
             max_values=1,
             options=options,
-            custom_id="growlink:help:language",
+            custom_id=custom_id,
         )
 
     async def callback(self, interaction: discord.Interaction):
-        self.help_view.language = self.values[0]
-        self.help_view._build()
-
-        await interaction.response.edit_message(
-            view=self.help_view
+        await self.callback_handler(
+            interaction,
+            self.values[0],
         )
