@@ -5,6 +5,7 @@ from views.promote.promotion.review_button import (
     EditPromotionButton,
     SubmitPromotionButton,
 )
+from views.promote.promotion.emoji_list_button import EmojiListButton
 
 
 class PromotionReviewView(discord.ui.LayoutView):
@@ -57,6 +58,7 @@ class PromotionReviewView(discord.ui.LayoutView):
             discord.ui.ActionRow(
                 EditPromotionButton(self),
                 SubmitPromotionButton(self),
+                EmojiListButton(),
             )
         )
 
