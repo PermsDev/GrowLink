@@ -1,7 +1,7 @@
 
 import discord
 
-from views.help.commands import COMMAND_HELP
+from locales.help import COMMAND_HELP
 from database.growlink.emoji_manager import get_emoji
 from views.components.language_select import LanguageSelect
 

@@ -5,30 +5,65 @@ from database.growlink.emoji_manager import (
     get_emojis,
     get_emoji,
 )
+from utils.locale_loader import get_translations
+from views.components.language_select import LanguageSelect
 
 
 class EmojiListView(discord.ui.LayoutView):
     def __init__(self):
         super().__init__(timeout=180)
 
+        self.translations = get_translations("emoji/emoji_list.json")
+        self.language = self._get_default_language()
+
+        self._build()
+
+    def _get_default_language(self):
+        if "en" in self.translations:
+            return "en"
+
+        if self.translations:
+            return next(iter(self.translations))
+
+        return "en"
+
+    async def on_language_select(
+        self,
+        interaction: discord.Interaction,
+        language: str,
+    ):
+        if language not in self.translations:
+            await interaction.response.defer()
+            return
+
+        self.language = language
+        self._build()
+
+        await interaction.response.edit_message(view=self)
+
+    def _build(self):
+        self.clear_items()
+
+        texts = self.translations.get(
+            self.language,
+            self.translations.get("en", {}),
+        )
+
         emojis = get_emojis()
 
         container_items = [
             discord.ui.TextDisplay(
-                "## 🧩 GrowLink Emoji List"
+                f"## {texts.get('title', '🧩 GrowLink Emoji List')}"
             ),
             discord.ui.Separator(visible=True),
             discord.ui.TextDisplay(
-                "**How to use**\n"
-                "Type an emoji key surrounded by colons in your "
-                "World Name or Description.\n\n"
-                "Example: `:dirt:`\n"
-                "If the emoji exists, GrowLink will replace it "
-                "with the corresponding custom emoji. "
-                "Otherwise, the text remains unchanged."
+                f"**{texts.get('instructions_title', 'How to use')}**\n"
+                f"{texts.get('instructions', '')}"
             ),
             discord.ui.Separator(visible=True),
-            discord.ui.TextDisplay("**Available Emojis**"),
+            discord.ui.TextDisplay(
+                f"**{texts.get('available', 'Available Emojis')}**"
+            ),
         ]
 
         if emojis:
@@ -59,7 +94,10 @@ class EmojiListView(discord.ui.LayoutView):
         else:
             container_items.append(
                 discord.ui.TextDisplay(
-                    "No emojis are currently available."
+                    texts.get(
+                        "empty",
+                        "No emojis are currently available.",
+                    )
                 )
             )
 
@@ -67,7 +105,10 @@ class EmojiListView(discord.ui.LayoutView):
             [
                 discord.ui.Separator(visible=True),
                 discord.ui.TextDisplay(
-                    "-# Emoji list is loaded from the current cache."
+                    texts.get(
+                        "footer",
+                        "-# Emoji list is loaded from the current cache.",
+                    )
                 ),
             ]
         )
@@ -78,6 +119,18 @@ class EmojiListView(discord.ui.LayoutView):
                 accent_colour=discord.Color.green(),
             )
         )
+
+        if self.translations:
+            self.add_item(
+                discord.ui.ActionRow(
+                    LanguageSelect(
+                        translations=self.translations,
+                        current_language=self.language,
+                        callback_handler=self.on_language_select,
+                        custom_id="growlink:promote:emoji_list:language",
+                    )
+                )
+            )
 
 
 class EmojiListButton(discord.ui.Button):
