@@ -58,6 +58,11 @@ class PromotionReviewView(discord.ui.LayoutView):
             discord.ui.ActionRow(
                 EditPromotionButton(self),
                 SubmitPromotionButton(self),
+            )
+        )
+
+        self.add_item(
+            discord.ui.ActionRow(
                 EmojiListButton(),
             )
         )

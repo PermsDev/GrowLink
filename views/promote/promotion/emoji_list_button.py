@@ -1,4 +1,6 @@
 
+import math
+
 import discord
 
 from database.growlink.emoji_manager import (
@@ -9,12 +11,66 @@ from utils.locale_loader import get_translations
 from views.components.language_select import LanguageSelect
 
 
+EMOJIS_PER_PAGE = 20
+
+
+class PreviousPageButton(discord.ui.Button):
+    def __init__(self, view):
+        super().__init__(
+            emoji="◀️",
+            style=discord.ButtonStyle.secondary,
+            disabled=view.page <= 0,
+            custom_id="growlink:promote:emoji_list:previous",
+        )
+        self.emoji_view = view
+
+    async def callback(self, interaction: discord.Interaction):
+        self.emoji_view.page -= 1
+        self.emoji_view._build()
+
+        await interaction.response.edit_message(
+            view=self.emoji_view
+        )
+
+
+class PageIndicatorButton(discord.ui.Button):
+    def __init__(self, page: int, total_pages: int):
+        super().__init__(
+            label=f"{page + 1}/{total_pages}",
+            style=discord.ButtonStyle.secondary,
+            disabled=True,
+            custom_id="growlink:promote:emoji_list:page",
+        )
+
+
+class NextPageButton(discord.ui.Button):
+    def __init__(self, view, total_pages: int):
+        super().__init__(
+            emoji="▶️",
+            style=discord.ButtonStyle.secondary,
+            disabled=view.page >= total_pages - 1,
+            custom_id="growlink:promote:emoji_list:next",
+        )
+        self.emoji_view = view
+
+    async def callback(self, interaction: discord.Interaction):
+        self.emoji_view.page += 1
+        self.emoji_view._build()
+
+        await interaction.response.edit_message(
+            view=self.emoji_view
+        )
+
+
 class EmojiListView(discord.ui.LayoutView):
     def __init__(self):
         super().__init__(timeout=180)
 
-        self.translations = get_translations("emoji/emoji_list.json")
+        self.translations = get_translations(
+            "emoji/emoji_list.json"
+        )
         self.language = self._get_default_language()
+        self.page = 0
 
         self._build()
 
@@ -39,7 +95,9 @@ class EmojiListView(discord.ui.LayoutView):
         self.language = language
         self._build()
 
-        await interaction.response.edit_message(view=self)
+        await interaction.response.edit_message(
+            view=self
+        )
 
     def _build(self):
         self.clear_items()
@@ -49,7 +107,20 @@ class EmojiListView(discord.ui.LayoutView):
             self.translations.get("en", {}),
         )
 
-        emojis = get_emojis()
+        emojis = sorted(get_emojis())
+        total_pages = max(
+            1,
+            math.ceil(len(emojis) / EMOJIS_PER_PAGE),
+        )
+
+        self.page = max(
+            0,
+            min(self.page, total_pages - 1),
+        )
+
+        start_index = self.page * EMOJIS_PER_PAGE
+        end_index = start_index + EMOJIS_PER_PAGE
+        page_emojis = emojis[start_index:end_index]
 
         container_items = [
             discord.ui.TextDisplay(
@@ -66,31 +137,18 @@ class EmojiListView(discord.ui.LayoutView):
             ),
         ]
 
-        if emojis:
+        if page_emojis:
             emoji_lines = [
+                f"{start_index + index + 1}. "
                 f"{get_emoji(key, default=f':{key}:')} `:{key}:`"
-                for key in sorted(emojis)
+                for index, key in enumerate(page_emojis)
             ]
 
-            chunks = []
-            current_chunk = []
-
-            for line in emoji_lines:
-                candidate = "\n".join(current_chunk + [line])
-
-                if len(candidate) > 3500 and current_chunk:
-                    chunks.append("\n".join(current_chunk))
-                    current_chunk = [line]
-                else:
-                    current_chunk.append(line)
-
-            if current_chunk:
-                chunks.append("\n".join(current_chunk))
-
-            for chunk in chunks:
-                container_items.append(
-                    discord.ui.TextDisplay(chunk)
+            container_items.append(
+                discord.ui.TextDisplay(
+                    "\n".join(emoji_lines)
                 )
+            )
         else:
             container_items.append(
                 discord.ui.TextDisplay(
@@ -131,6 +189,21 @@ class EmojiListView(discord.ui.LayoutView):
                     )
                 )
             )
+        
+        self.add_item(
+            discord.ui.ActionRow(
+                PreviousPageButton(self),
+                PageIndicatorButton(
+                    self.page,
+                    total_pages,
+                ),
+                NextPageButton(
+                    self,
+                    total_pages,
+                ),
+            )
+        )
+
 
 
 class EmojiListButton(discord.ui.Button):

@@ -24,19 +24,20 @@ class PromotionWebhookView(discord.ui.LayoutView):
             discord.ui.Separator(visible=True),
         ]
 
+
+        container_items.append(
+            discord.ui.TextDisplay(description)
+        )
+
         if world_name and world_name.strip():
-            container_items.extend(
-                [
-                    discord.ui.TextDisplay(
-                        f"**World Name:** {world_name.strip()}"
-                    ),
-                    discord.ui.Separator(visible=True),
-                ]
+            container_items.append(
+                discord.ui.TextDisplay(
+                    f"\n\n\n**World AT {get_emoji('bluearrow')}** `{world_name.strip()}`"
+                )
             )
 
         container_items.extend(
             [
-                discord.ui.TextDisplay(f"\n\n{description}"),
                 discord.ui.Separator(visible=True),
                 discord.ui.TextDisplay(
                     f"-# Submitted by {submitter} | "

@@ -34,7 +34,7 @@ class PromoteModal(discord.ui.Modal, title="Promote Item / World"):
         self.add_item(self.description)
 
     async def on_submit(self, interaction: discord.Interaction):
-        world_name = parse_emojis(self.world_name.value.strip())
+        world_name = self.world_name.value.strip()
         description = parse_emojis(self.description.value.strip())
 
         if self.review_view:
