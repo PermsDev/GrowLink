@@ -19,25 +19,25 @@ class PromotionWebhookView(discord.ui.LayoutView):
 
         container_items = [
             discord.ui.TextDisplay(
-                f"## {get_emoji('digi')} GrowLink Promotion"
+                f"## {get_emoji('digi')} {bot_name} Promotion"
             ),
             discord.ui.Separator(visible=True),
         ]
 
-
-        container_items.append(
-            discord.ui.TextDisplay(description)
-        )
-
         if world_name and world_name.strip():
-            container_items.append(
-                discord.ui.TextDisplay(
-                    f"\n\n\n**World AT {get_emoji('bluearrow')}** `{world_name.strip()}`"
-                )
+            container_items.extend(
+                [
+                    discord.ui.TextDisplay(
+                        f"**{get_emoji('globe')} WORLD AT:**"
+                        f"`{world_name.strip().upper()}`"
+                    ),
+                    discord.ui.Separator(visible=True),
+                ]
             )
 
         container_items.extend(
             [
+                discord.ui.TextDisplay(description),
                 discord.ui.Separator(visible=True),
                 discord.ui.TextDisplay(
                     f"-# Submitted by {submitter} | "

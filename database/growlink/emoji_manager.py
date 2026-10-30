@@ -2,22 +2,13 @@ from database.database import get_grow_pool as get_pool
 from asyncmy.cursors import DictCursor
 
 
-# ==================================================
-# CACHE EMOJI
-# ==================================================
 EMOJIS = {}
 
-# ==================================================
-# LOAD SEMUA EMOJI
-# ==================================================
-
 async def load_emojis():
-
     pool = get_pool()
 
     async with pool.acquire() as conn:
         async with conn.cursor(DictCursor) as cursor:
-
             await cursor.execute("""
                 SELECT
                     emoji_key,
@@ -31,40 +22,31 @@ async def load_emojis():
     EMOJIS.clear()
 
     for row in rows:
+        emoji_key = row["emoji_key"]
 
-        EMOJIS[row["emoji_key"]] = {
+        EMOJIS[emoji_key.lower()] = {
+            "emoji_key": emoji_key,
             "emoji_id": row["emoji_id"],
-            "animated": bool(row["animated"])
+            "animated": bool(row["animated"]),
         }
 
 
-# ==================================================
-# RELOAD CACHE
-# ==================================================
-
 async def reload_emojis():
-
     await load_emojis()
 
 
-# ==================================================
-# GET SEMUA EMOJI
-# ==================================================
-
 def get_emojis():
+    return {
+        emoji["emoji_key"]: {
+            "emoji_id": emoji["emoji_id"],
+            "animated": emoji["animated"],
+        }
+        for emoji in EMOJIS.values()
+    }
 
-    return EMOJIS.copy()
 
-
-# ==================================================
-# GET EMOJI ID
-# ==================================================
-
-def get_emoji_id(
-    emoji_key: str
-):
-
-    emoji = EMOJIS.get(emoji_key)
+def get_emoji_id(emoji_key: str):
+    emoji = EMOJIS.get(emoji_key.lower())
 
     if not emoji:
         return None
@@ -72,96 +54,69 @@ def get_emoji_id(
     return emoji["emoji_id"]
 
 
-# ==================================================
-# GET FORMAT EMOJI DISCORD
-# ==================================================
-
-def get_emoji(
-    emoji_key: str,
-    default: str = "🎯"
-):
-
-    emoji = EMOJIS.get(emoji_key)
+def get_emoji(emoji_key: str, default: str = "🎯"):
+    emoji = EMOJIS.get(emoji_key.lower())
 
     if not emoji:
         return default
 
+    original_key = emoji["emoji_key"]
     emoji_id = emoji["emoji_id"]
-    animated = emoji["animated"]
 
-    if animated:
-        return f"<a:{emoji_key}:{emoji_id}>"
+    if emoji["animated"]:
+        return f"<a:{original_key}:{emoji_id}>"
 
-    return f"<:{emoji_key}:{emoji_id}>"
+    return f"<:{original_key}:{emoji_id}>"
 
-
-# ==================================================
-# TAMBAH / UPDATE EMOJI
-# ==================================================
 
 async def set_emoji(
     emoji_key: str,
     emoji_id: int,
-    animated: bool
+    animated: bool,
 ):
-
     pool = get_pool()
 
     async with pool.acquire() as conn:
-
         try:
-
             async with conn.cursor() as cursor:
-
                 await cursor.execute("""
                     INSERT INTO gl_emoji (
                         emoji_key,
                         emoji_id,
                         animated
                     )
-                    VALUES (%s, %s, %s) 
-
+                    VALUES (%s, %s, %s)
                     ON DUPLICATE KEY UPDATE
                         emoji_id = VALUES(emoji_id),
                         animated = VALUES(animated)
                 """, (
                     emoji_key,
                     emoji_id,
-                    animated
+                    animated,
                 ))
 
             await conn.commit()
 
         except Exception:
-
             await conn.rollback()
             raise
 
-    EMOJIS[emoji_key] = {
+    EMOJIS[emoji_key.lower()] = {
+        "emoji_key": emoji_key,
         "emoji_id": emoji_id,
-        "animated": animated
+        "animated": bool(animated),
     }
 
 
-# ==================================================
-# HAPUS EMOJI
-# ==================================================
-
-async def delete_emoji(
-    emoji_key: str
-):
-
+async def delete_emoji(emoji_key: str):
     pool = get_pool()
 
     async with pool.acquire() as conn:
-
         try:
-
             async with conn.cursor() as cursor:
-
                 await cursor.execute("""
                     DELETE FROM gl_emoji
-                    WHERE emoji_key = %s
+                    WHERE LOWER(emoji_key) = LOWER(%s)
                 """, (
                     emoji_key,
                 ))
@@ -169,11 +124,7 @@ async def delete_emoji(
             await conn.commit()
 
         except Exception:
-
             await conn.rollback()
             raise
 
-    EMOJIS.pop(
-        emoji_key,
-        None
-    )
+    EMOJIS.pop(emoji_key.lower(), None)

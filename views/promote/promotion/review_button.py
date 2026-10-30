@@ -7,6 +7,7 @@ from database.growlink.feature_manager import (
     get_active_feature_guild_ids,
     deactivate_feature,
 )
+from views.emoji.emoji_list_button import EmojiListView
 from database.growlink.setup_manager import get_channel_id
 from database.growlink.webhook_manager import ensure_channel_webhook
 from database.main.game_manager import get_game_value
@@ -14,6 +15,20 @@ from views.promote.promotion.result_view import PromotionResultView
 
 logger = logging.getLogger(__name__)
 
+class EmojiListButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(
+            label="Emoji List",
+            emoji="🧩",
+            style=discord.ButtonStyle.secondary,
+            custom_id="growlink:promote:emoji_list",
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.response.send_message(
+            view=EmojiListView(),
+            ephemeral=True,
+        )
 
 class SubmitPromotionButton(discord.ui.Button):
     def __init__(self, promotion_view: discord.ui.LayoutView):
@@ -36,10 +51,10 @@ class SubmitPromotionButton(discord.ui.Button):
             )
             return
 
-        if len(view.description.split()) < 3:
+        if len(view.description.split()) < 2:
             await interaction.response.send_message(
                 "⚠️ Your promotion description is too short. "
-                "Please edit it and provide at least 3 words.",
+                "Please edit it and provide at least 2 words.",
                 ephemeral=True,
             )
             return

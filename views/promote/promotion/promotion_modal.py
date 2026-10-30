@@ -48,6 +48,7 @@ class PromoteModal(discord.ui.Modal, title="Promote Item / World"):
         view = PromotionReviewView(
             world_name=world_name,
             description=description,
+            submitter=interaction.user,
         )
 
         await interaction.response.send_message(

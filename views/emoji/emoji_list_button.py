@@ -203,20 +203,3 @@ class EmojiListView(discord.ui.LayoutView):
                 ),
             )
         )
-
-
-
-class EmojiListButton(discord.ui.Button):
-    def __init__(self):
-        super().__init__(
-            label="Emoji List",
-            emoji="🧩",
-            style=discord.ButtonStyle.secondary,
-            custom_id="growlink:promote:emoji_list",
-        )
-
-    async def callback(self, interaction: discord.Interaction):
-        await interaction.response.send_message(
-            view=EmojiListView(),
-            ephemeral=True,
-        )
