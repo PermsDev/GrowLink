@@ -1,0 +1,39 @@
+{
+    "name": "emoji-list",
+    "translations": {
+        "en": {
+            "description": "Display the available custom emojis registered in GrowLink.",
+            "details": "This command displays the list of custom emojis currently registered in GrowLink.\n\nEmojis are displayed with their corresponding emoji key, allowing you to identify which emojis are available for use in promotion descriptions.\n\nThe list supports pagination, displaying up to 20 emojis per page. You can also switch the display language using the language selector.\n\nTo use an emoji in a promotion description, type its key surrounded by colons.\n\nExample: `:dirt:`",
+            "options": [],
+            "usage": [
+                "/emoji-list"
+            ],
+            "permissions": [
+                "Public"
+            ],
+            "examples": [
+                {
+                "command": "/emoji-list",
+                "description": "View all custom emojis available in GrowLink."
+                }
+            ]
+        },
+        "id": {
+            "description": "Menampilkan daftar custom emoji yang tersedia di GrowLink.",
+            "details": "Command ini menampilkan daftar custom emoji yang saat ini terdaftar di GrowLink.\n\nSetiap emoji ditampilkan bersama emoji key yang sesuai sehingga kamu dapat mengetahui emoji apa saja yang tersedia untuk digunakan dalam deskripsi promosi.\n\nDaftar emoji mendukung pagination dengan maksimal 20 emoji per halaman. Kamu juga dapat mengganti bahasa tampilan menggunakan pemilih bahasa.\n\nUntuk menggunakan emoji dalam deskripsi promosi, ketik key emoji yang diapit tanda titik dua.\n\nContoh: `:dirt:`",
+            "options": [],
+            "usage": [
+                "/emoji-list"
+            ],
+            "permissions": [
+                "Public"
+            ],
+            "examples": [
+                {
+                "command": "/emoji-list",
+                "description": "Melihat semua custom emoji yang tersedia di GrowLink."
+                }
+            ]
+        }
+    }
+}
