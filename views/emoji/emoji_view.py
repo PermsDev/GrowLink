@@ -11,7 +11,7 @@ from utils.locale_loader import get_translations
 from views.components.language_select import LanguageSelect
 
 
-EMOJIS_PER_PAGE = 20
+EMOJIS_PER_PAGE = 15
 
 
 class PreviousPageButton(discord.ui.Button):

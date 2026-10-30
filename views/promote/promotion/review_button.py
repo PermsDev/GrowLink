@@ -7,7 +7,7 @@ from database.growlink.feature_manager import (
     get_active_feature_guild_ids,
     deactivate_feature,
 )
-from views.emoji.emoji_list_button import EmojiListView
+from views.emoji.emoji_view import EmojiListView
 from database.growlink.setup_manager import get_channel_id
 from database.growlink.webhook_manager import ensure_channel_webhook
 from database.main.game_manager import get_game_value
