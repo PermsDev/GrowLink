@@ -14,7 +14,7 @@ class PromoteButton(discord.ui.Button):
     def __init__(self):
         super().__init__(
             label="Promote Item / World",
-            emoji=get_emoji("megaphone"),
+            emoji=get_emoji("Megaphone"),
             style=discord.ButtonStyle.success,
             custom_id="growlink:promote:start",
         )

@@ -3,7 +3,7 @@
         "en": {
             "title": "🧩 GrowLink Emoji List",
             "instructions_title": "How to use",
-            "instructions": "Type an emoji key surrounded by colons in the input form.\n\n**Example:** This is dirt `:dirt:`\n**Result:** This is dirt <:dirt:1564939391992995983>\n-# If the emoji exists, GrowLink will replace it with the corresponding custom emoji. Otherwise, the text will remain unchanged.",
+            "instructions": "Type an emoji key surrounded by colons in the input form.\n\n**Example:** This is Dirt `:Dirt:`\n**Result:** This is Dirt <:Dirt:1564939391992995983>\n-# If the emoji exists, GrowLink will replace it with the corresponding custom emoji. Otherwise, the text will remain unchanged.",
             "available": "Available Emojis",
             "empty": "No emojis are currently available.",
             "footer": "-# Emoji list is loaded from the current cache."
@@ -11,7 +11,7 @@
         "id": {
             "title": "🧩 Daftar Emoji GrowLink",
             "instructions_title": "Cara menggunakan",
-            "instructions": "Ketik key emoji yang diapit tanda titik dua pada input form.\n\n**Contoh:** ini adalah tanah `:dirt:`\n**Hasil:** ini adalah tanah <:dirt:1564939391992995983> \n-# Jika emoji tersedia, GrowLink akan menggantinya dengan custom emoji yang sesuai. Jika tidak, teks akan tetap seperti semula.",
+            "instructions": "Ketik key emoji yang diapit tanda titik dua pada input form.\n\n**Contoh:** ini adalah tanah `:Dirt:`\n**Hasil:** ini adalah tanah <:Dirt:1564939391992995983> \n-# Jika emoji tersedia, GrowLink akan menggantinya dengan custom emoji yang sesuai. Jika tidak, teks akan tetap seperti semula.",
             "available": "Emoji yang tersedia",
             "empty": "Saat ini belum ada emoji yang tersedia.",
             "footer": "-# Daftar emoji dimuat dari cache saat ini."
