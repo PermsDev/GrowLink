@@ -8,7 +8,7 @@ from views.components.language_select import LanguageSelect
 
 class HelpView(discord.ui.LayoutView):
     LABELS = {
-        "title": f"{get_emoji('digi')} GrowLink Help",
+        "title": f"{get_emoji('DigiVend')} GrowLink Help",
         "details": "Description",
         "options": "Options",
         "usage": "Usage",

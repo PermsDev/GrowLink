@@ -19,7 +19,7 @@ class PromotionWebhookView(discord.ui.LayoutView):
 
         container_items = [
             discord.ui.TextDisplay(
-                f"## {get_emoji('digi')} {bot_name} Promotion"
+                f"## {get_emoji('DigiVend')} {bot_name} Promotion"
             ),
             discord.ui.Separator(visible=True),
         ]

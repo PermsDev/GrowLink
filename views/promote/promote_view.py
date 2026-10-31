@@ -15,7 +15,7 @@ class PromoteView(discord.ui.LayoutView):
         self.add_item(
             discord.ui.Container(
                 discord.ui.TextDisplay(
-                    f"## {get_emoji('digi')} GrowLink Promote\n"
+                    f"## {get_emoji('DigiVend')} GrowLink Promote\n"
                     "Promote your Growtopia items, worlds, or services "
                     "across Discord servers that have GrowLink Promote enabled."
                 ),

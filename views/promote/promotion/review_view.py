@@ -40,7 +40,7 @@ class PromotionReviewView(discord.ui.LayoutView):
 
         container_items = [
             discord.ui.TextDisplay(
-                f"## {get_emoji('digi')} Review Promotion"
+                f"## {get_emoji('DigiVend')} Review Promotion"
             ),
             discord.ui.Separator(visible=True),
         ]
